@@ -22,13 +22,13 @@ final class MainTabBarController: UITabBarController {
             addRecordVC,
             recordsListVC
         ]
-        
+
         addRecordVC.tabBarItem = UITabBarItem(
             title: "Add",
             image: UIImage(systemName: "calendar.circle"),
             tag: 0
         )
-        
+
         recordsListVC.tabBarItem = UITabBarItem(
             title: "List",
             image: UIImage(systemName: "person.circle.fill"),
@@ -36,5 +36,3 @@ final class MainTabBarController: UITabBarController {
         )
     }
 }
-
-
