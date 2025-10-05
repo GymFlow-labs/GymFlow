@@ -1,0 +1,56 @@
+name: GymFlow
+
+options:
+  bundleIdPrefix: com.artkriukov
+  deploymentTarget:
+    iOS: "15.0"
+  defaultConfig: Production
+
+configs:
+  Debug: debug
+  Production: release
+  
+packages:
+  SwiftLint:
+    url: https://github.com/realm/SwiftLint
+    from: 0.59.0
+  Kingfisher:
+    url: https://github.com/onevcat/Kingfisher
+    from: 7.0.0
+
+targets:
+  GymFlow:
+    type: application
+    platform: iOS
+    deploymentTarget:
+      iOS: "15.0"
+    sources:
+      - path: GymFlow/
+    resources:
+      - path: GymFlow/Resources
+    settings:
+      base:
+        INFOPLIST_FILE: GymFlow/Resources/Info.plist
+        PRODUCT_BUNDLE_IDENTIFIER: com.artkriukov.GymFlow
+        TARGETED_DEVICE_FAMILY: "1"
+        SWIFT_VERSION: "5.0"
+        VERSIONING_SYSTEM: "apple-generic"
+        MARKETING_VERSION: "1.0.0"
+        CURRENT_PROJECT_VERSION: 1
+    scheme:
+      environmentVariables:
+        DYLD_PRINT_STATISTICS: "1"
+    dependencies:
+      - package: Kingfisher
+    postCompileScripts:
+      - name: SwiftLint
+        runOnlyWhenInstalling: false
+        script: |
+          export PATH="/opt/homebrew/bin:$PATH"
+          echo "Current PATH: $PATH"
+          if which swiftlint >/dev/null; then
+              swiftlint
+          else
+              echo "SwiftLint not found! Check Homebrew installation."
+              exit 1
+          fi
