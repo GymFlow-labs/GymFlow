@@ -17,6 +17,9 @@ packages:
   Kingfisher:
     url: https://github.com/onevcat/Kingfisher
     from: 7.0.0
+  Rswift:
+    url: https://github.com/mac-cain13/R.swift.git
+    from: 7.0.0
 
 targets:
   GymFlow:
@@ -42,6 +45,13 @@ targets:
         DYLD_PRINT_STATISTICS: "1"
     dependencies:
       - package: Kingfisher
+      - package: Rswift
+        product: RswiftLibrary
+    
+    buildToolPlugins:
+      - plugin: RswiftGenerateInternalResources
+        package: Rswift
+
     postCompileScripts:
       - name: SwiftLint
         runOnlyWhenInstalling: false
