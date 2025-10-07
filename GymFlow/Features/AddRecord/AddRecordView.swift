@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct AddRecordView: View {
+    @State private var weight = "1"
+    
     var body: some View {
         NavigationStack {
             VStack {
@@ -16,16 +18,22 @@ struct AddRecordView: View {
                 }
                 .padding()
                 
+                TextFieldView(weight: $weight)
+                    .padding()
+                
                 RowButtonView(text: "Календарь", textIcon: .calendar)
                     .padding()
                 
                 Spacer()
                 
-                SaveButton()
+                SaveButton {
+                    print(weight)
+                }
                     .padding(.horizontal)
                     .padding(.bottom)
             }
             .navigationTitle("Новый рекорд")
+            .background(Color.backgroundColor)
         }
     }
 }
@@ -65,14 +73,44 @@ struct RowButtonView: View {
 }
 
 struct SaveButton: View {
+    private var action: () -> Void
+    
+    init(action: @escaping () -> Void) {
+        self.action = action
+    }
+    
     var body: some View {
-        Button("Сохранить") {
-            print("Сохранить")
+        Button {
+            action()
+        } label: {
+            Text("Сохранить")
+                .padding(.vertical, 12)
+                .frame(maxWidth: .infinity)
+                .background(Color.buttonBackgroundColor)
+                .foregroundStyle(Color.buttonTextColor)
+                .clipShape(RoundedRectangle(cornerRadius: UIConstants.cornerRadius))
         }
-        .padding(.vertical, 12)
-        .frame(maxWidth: .infinity)
-        .background(Color.buttonBackgroundColor)
-        .foregroundStyle(Color.buttonTextColor)
+        .buttonStyle(.plain)
+    }
+}
+
+struct TextFieldView: View {
+    @Binding var weight: String
+    @State private var unit = "кг"
+    
+    var body: some View {
+        HStack(alignment: .center, spacing: 12) {
+            TextField("Рекордный вес", text: $weight)
+                .font(.largeTitle)
+                .foregroundStyle(Color.primaryTextColor)
+                .keyboardType(.decimalPad)
+            
+            Text(unit)
+                .font(.title2)
+                .foregroundStyle(Color.secondaryTextColor)
+        }
+        .padding()
+        .background(Color.cellBackgroundColor)
         .clipShape(RoundedRectangle(cornerRadius: UIConstants.cornerRadius))
     }
 }
