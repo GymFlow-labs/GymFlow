@@ -12,17 +12,18 @@ struct AddRecordView: View {
     
     var body: some View {
         NavigationStack {
-            VStack {
+            VStack(spacing: UIConstants.Spacing.large) {
                 NavigationLink(destination: RecordHistoryView()) {
                     RowButtonView(text: "упражнение", textIcon: .barbell)
                 }
-                .padding()
+                .padding(.top)
+                .padding(.horizontal)
                 
                 TextFieldView(weight: $weight)
-                    .padding()
+                    .padding(.horizontal)
                 
                 RowButtonView(text: "Календарь", textIcon: .calendar)
-                    .padding()
+                    .padding(.horizontal)
                 
                 Spacer()
                 
@@ -67,7 +68,7 @@ struct RowButtonView: View {
         .foregroundStyle(Color.primaryTextColor)
         .padding()
         .background(Color.cellBackgroundColor)
-        .clipShape(RoundedRectangle(cornerRadius: UIConstants.cornerRadius))
+        .clipShape(RoundedRectangle(cornerRadius: UIConstants.CornerRadius.large))
     }
     
 }
@@ -88,7 +89,7 @@ struct SaveButton: View {
                 .frame(maxWidth: .infinity)
                 .background(Color.buttonBackgroundColor)
                 .foregroundStyle(Color.buttonTextColor)
-                .clipShape(RoundedRectangle(cornerRadius: UIConstants.cornerRadius))
+                .clipShape(RoundedRectangle(cornerRadius: UIConstants.CornerRadius.large))
         }
         .buttonStyle(.plain)
     }
@@ -111,6 +112,6 @@ struct TextFieldView: View {
         }
         .padding()
         .background(Color.cellBackgroundColor)
-        .clipShape(RoundedRectangle(cornerRadius: UIConstants.cornerRadius))
+        .clipShape(RoundedRectangle(cornerRadius: UIConstants.CornerRadius.large))
     }
 }
