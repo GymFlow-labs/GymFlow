@@ -14,12 +14,18 @@ struct AddRecordView: View {
                 NavigationLink(destination: RecordHistoryView()) {
                     RowButtonView(text: "упражнение", textIcon: .barbell)
                 }
-                
                 .padding()
                 
                 RowButtonView(text: "Календарь", textIcon: .calendar)
-                .padding()
+                    .padding()
+                
+                Spacer()
+                
+                SaveButton()
+                    .padding(.horizontal)
+                    .padding(.bottom)
             }
+            .navigationTitle("Новый рекорд")
         }
     }
 }
@@ -31,7 +37,7 @@ struct AddRecordView: View {
 struct RowButtonView: View {
     private let text: String
     private let textIcon: Image
-
+    
     init(text: String, textIcon: Image) {
         self.text = text
         self.textIcon = textIcon
@@ -53,7 +59,20 @@ struct RowButtonView: View {
         .foregroundStyle(Color.primaryTextColor)
         .padding()
         .background(Color.cellBackgroundColor)
-        .cornerRadius(12)
+        .clipShape(RoundedRectangle(cornerRadius: UIConstants.cornerRadius))
     }
-        
+    
+}
+
+struct SaveButton: View {
+    var body: some View {
+        Button("Сохранить") {
+            print("Сохранить")
+        }
+        .padding(.vertical, 12)
+        .frame(maxWidth: .infinity)
+        .background(Color.buttonBackgroundColor)
+        .foregroundStyle(Color.buttonTextColor)
+        .clipShape(RoundedRectangle(cornerRadius: UIConstants.cornerRadius))
+    }
 }
