@@ -9,30 +9,36 @@ import SwiftUI
 
 struct AddRecordView: View {
     @State private var weight = "1"
+    @State private var showCalendar = false
+    @State private var selectedDate = Date()
     
     var body: some View {
         NavigationStack {
             VStack(spacing: UIConstants.Spacing.large) {
-                NavigationLink(destination: RecordHistoryView()) {
+                NavigationLink(destination: ExercisesView()) {
                     RowButtonView(text: "упражнение", textIcon: .barbell)
                 }
                 .padding(.top)
-                .padding(.horizontal)
                 
                 TextFieldView(weight: $weight)
-                    .padding(.horizontal)
                 
-                RowButtonView(text: "Календарь", textIcon: .calendar)
-                    .padding(.horizontal)
+                RowButtonView(text: "Календарь", textIcon: .calendar) {
+                    showCalendar = true
+                }
+                .sheet(isPresented: $showCalendar) {
+                    CalendarSheet(selectedDate: $selectedDate)
+                        .presentationDetents([.medium])
+                }
                 
                 Spacer()
                 
                 SaveButton {
                     print(weight)
                 }
-                    .padding(.horizontal)
+                    
                     .padding(.bottom)
             }
+            .padding(.horizontal)
             .navigationTitle("Новый рекорд")
             .background(Color.backgroundColor)
         }
@@ -43,16 +49,51 @@ struct AddRecordView: View {
     AddRecordView()
 }
 
+struct CalendarSheet: View {
+    @Binding var selectedDate: Date
+    @Environment(\.dismiss) var dismiss
+    
+    var body: some View {
+        VStack {
+            DatePicker(
+                "Выберите дату",
+                selection: $selectedDate,
+                displayedComponents: .date
+            )
+            .datePickerStyle(.graphical)
+            .padding()
+            
+            Button("Готово") {
+                dismiss()
+            }
+            .padding()
+        }
+    }
+}
+
 struct RowButtonView: View {
     private let text: String
     private let textIcon: Image
+    private let action: (() -> Void)?
     
-    init(text: String, textIcon: Image) {
+    init(text: String, textIcon: Image, action: (() -> Void)? = nil) {
         self.text = text
         self.textIcon = textIcon
+        self.action = action
     }
     
     var body: some View {
+        if let action = action {
+            Button(action: action) {
+                content
+            }
+            .buttonStyle(.plain)
+        } else {
+            content
+        }
+    }
+    
+    private var content: some View {
         HStack {
             textIcon
                 .resizable()
@@ -70,7 +111,6 @@ struct RowButtonView: View {
         .background(Color.cellBackgroundColor)
         .clipShape(RoundedRectangle(cornerRadius: UIConstants.CornerRadius.large))
     }
-    
 }
 
 struct SaveButton: View {
