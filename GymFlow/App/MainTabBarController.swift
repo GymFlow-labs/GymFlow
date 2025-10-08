@@ -5,6 +5,7 @@
 //  Created by Artem Kriukov on 05.10.2025.
 //
 
+import SwiftUI
 import UIKit
 
 final class MainTabBarController: UITabBarController {
@@ -15,7 +16,9 @@ final class MainTabBarController: UITabBarController {
     }
 
     private func setupTabBar() {
-        let addRecordVC = AddRecordViewController()
+        let addRecordView = AddRecordView()
+        let addRecordVC = UIHostingController(rootView: addRecordView)
+
         let recordsListVC = RecordsListViewController()
 
         viewControllers = [

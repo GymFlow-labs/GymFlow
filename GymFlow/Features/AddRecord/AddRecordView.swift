@@ -1,0 +1,157 @@
+//
+//  AddRecordView.swift
+//  GymFlow
+//
+//  Created by Artem Kriukov on 06.10.2025.
+//
+
+import SwiftUI
+
+struct AddRecordView: View {
+    @State private var weight = "1"
+    @State private var showCalendar = false
+    @State private var selectedDate = Date()
+    
+    var body: some View {
+        NavigationStack {
+            VStack(spacing: UIConstants.Spacing.large) {
+                NavigationLink(destination: ExercisesView()) {
+                    RowButtonView(text: "упражнение", textIcon: .barbell)
+                }
+                .padding(.top)
+                
+                TextFieldView(weight: $weight)
+                
+                RowButtonView(text: "Календарь", textIcon: .calendar) {
+                    showCalendar = true
+                }
+                .sheet(isPresented: $showCalendar) {
+                    CalendarSheet(selectedDate: $selectedDate)
+                        .presentationDetents([.medium])
+                }
+                
+                Spacer()
+                
+                SaveButton {
+                    print(weight)
+                }
+                    
+                    .padding(.bottom)
+            }
+            .padding(.horizontal)
+            .navigationTitle("Новый рекорд")
+            .background(Color.backgroundColor)
+        }
+    }
+}
+
+#Preview {
+    AddRecordView()
+}
+
+struct CalendarSheet: View {
+    @Binding var selectedDate: Date
+    @Environment(\.dismiss) var dismiss
+    
+    var body: some View {
+        VStack {
+            DatePicker(
+                "Выберите дату",
+                selection: $selectedDate,
+                displayedComponents: .date
+            )
+            .datePickerStyle(.graphical)
+            .padding()
+            
+            Button("Готово") {
+                dismiss()
+            }
+            .padding()
+        }
+    }
+}
+
+struct RowButtonView: View {
+    private let text: String
+    private let textIcon: Image
+    private let action: (() -> Void)?
+    
+    init(text: String, textIcon: Image, action: (() -> Void)? = nil) {
+        self.text = text
+        self.textIcon = textIcon
+        self.action = action
+    }
+    
+    var body: some View {
+        if let action = action {
+            Button(action: action) {
+                content
+            }
+            .buttonStyle(.plain)
+        } else {
+            content
+        }
+    }
+    
+    private var content: some View {
+        HStack {
+            textIcon
+                .resizable()
+                .frame(width: 30, height: 30)
+            
+            Text(text)
+                .font(.title3)
+            Spacer()
+            Image.chevron
+                .resizable()
+                .frame(width: 20, height: 20)
+        }
+        .foregroundStyle(Color.primaryTextColor)
+        .padding()
+        .background(Color.cellBackgroundColor)
+        .clipShape(RoundedRectangle(cornerRadius: UIConstants.CornerRadius.large))
+    }
+}
+
+struct SaveButton: View {
+    private var action: () -> Void
+    
+    init(action: @escaping () -> Void) {
+        self.action = action
+    }
+    
+    var body: some View {
+        Button {
+            action()
+        } label: {
+            Text("Сохранить")
+                .padding(.vertical, 12)
+                .frame(maxWidth: .infinity)
+                .background(Color.buttonBackgroundColor)
+                .foregroundStyle(Color.buttonTextColor)
+                .clipShape(RoundedRectangle(cornerRadius: UIConstants.CornerRadius.large))
+        }
+        .buttonStyle(.plain)
+    }
+}
+
+struct TextFieldView: View {
+    @Binding var weight: String
+    @State private var unit = "кг"
+    
+    var body: some View {
+        HStack(alignment: .center, spacing: 12) {
+            TextField("Рекордный вес", text: $weight)
+                .font(.largeTitle)
+                .foregroundStyle(Color.primaryTextColor)
+                .keyboardType(.decimalPad)
+            
+            Text(unit)
+                .font(.title2)
+                .foregroundStyle(Color.secondaryTextColor)
+        }
+        .padding()
+        .background(Color.cellBackgroundColor)
+        .clipShape(RoundedRectangle(cornerRadius: UIConstants.CornerRadius.large))
+    }
+}
