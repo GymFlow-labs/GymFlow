@@ -1,0 +1,42 @@
+//
+//  NetworkService.swift
+//  GymFlow
+//
+//  Created by Artem Kriukov on 09.10.2025.
+//
+
+import Foundation
+
+enum NetworkError: Error {
+    case invalidURL
+    case noData
+    case decodingError
+    case serverError(statusCode: Int)
+}
+
+final class NetworkService {
+    static let shared = NetworkService()
+    private init() {}
+    
+    func fetchExercises() async throws -> [DTOExercise] {
+        guard let url = URL(string: "https://gymflow-backend-3a0w.onrender.com/exercises") else {
+            throw NetworkError.invalidURL
+        }
+        
+        let (data, response) = try await URLSession.shared.data(from: url)
+        
+        guard let httpResponse = response as? HTTPURLResponse,
+              (200...299).contains(httpResponse.statusCode) else {
+            let statusCode = (response as? HTTPURLResponse)?.statusCode ?? 0
+            throw NetworkError.serverError(statusCode: statusCode)
+        }
+        
+        do {
+            let decoder = JSONDecoder()
+            let exercise = try decoder.decode([DTOExercise].self, from: data)
+            return exercise
+        } catch {
+            throw NetworkError.decodingError
+        }
+    }
+}

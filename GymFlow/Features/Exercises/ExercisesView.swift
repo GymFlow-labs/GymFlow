@@ -11,13 +11,14 @@ struct ExercisesView: View {
     @State private var searchText = ""
     @State private var exerciseIsSelected = false
     
-    let exercises = ["Жим лежа", "Приседания", "Становая тяга", "Подтягивания"]
+    @State private var exercises: [DTOExercise] = []
+    let network = NetworkService.shared
     
     var body: some View {
         VStack {
             List {
-                ForEach(searchResult, id: \.self) { exercise in
-                    Text(exercise)
+                ForEach(searchResult, id: \.id) { exercise in
+                    Text(exercise.nameRu)
                 }
             }
         }
@@ -26,13 +27,25 @@ struct ExercisesView: View {
             text: $searchText,
             placement: .navigationBarDrawer(displayMode: .always)
         )
+        .onAppear {
+            Task {
+                do {
+                    exercises = try await network.fetchExercises()
+                } catch {
+                    print("Error: \(error.localizedDescription)")
+                }
+            }
+        }
     }
     
-    var searchResult: [String] {
+    var searchResult: [DTOExercise] {
         if searchText.isEmpty {
             return exercises
         } else {
-            return exercises.filter { $0.contains(searchText) }
+            return exercises.filter { exercise in
+                exercise.name.localizedCaseInsensitiveContains(searchText) ||
+                exercise.nameRu.localizedCaseInsensitiveContains(searchText)
+            }
         }
     }
 }
