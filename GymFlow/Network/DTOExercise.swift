@@ -8,17 +8,16 @@
 import Foundation
 
 struct DTOExercise: Codable {
-    let id: Int
     let name: String
     let nameRu: String
     let category: String
     let description: String
+    let id: String
     
     enum CodingKeys: String, CodingKey {
-        case id = "exercise_id"
         case name
         case nameRu = "name_ru"
         case category, description
+        case id = "exercise_id"
     }
 }
-

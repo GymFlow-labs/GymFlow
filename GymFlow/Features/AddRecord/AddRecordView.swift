@@ -8,15 +8,21 @@
 import SwiftUI
 
 struct AddRecordView: View {
-    @State private var weight = "1"
     @State private var showCalendar = false
+    
+    @State private var selectedExercise: DTOExercise?
+    @State private var weight = "1"
     @State private var selectedDate = Date()
     
     var body: some View {
         NavigationStack {
             VStack(spacing: UIConstants.Spacing.large) {
-                NavigationLink(destination: ExercisesView()) {
-                    RowButtonView(text: "упражнение", textIcon: .barbell)
+                NavigationLink(destination: ExercisesView(selectedExercise: $selectedExercise)) {
+#warning("В зависимости от категории упражения менять иконку (textIcon) с ENUM!")
+                    RowButtonView(
+                        text: selectedExercise?.nameRu ?? "Выберите упражнение",
+                        textIcon: .barbell
+                    )
                 }
                 .padding(.top)
                 
@@ -100,7 +106,7 @@ struct RowButtonView: View {
                 .frame(width: 30, height: 30)
             
             Text(text)
-                .font(.title3)
+                .font(.body)
             Spacer()
             Image.chevron
                 .resizable()
