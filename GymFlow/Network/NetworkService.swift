@@ -15,10 +15,8 @@ enum NetworkError: Error {
 }
 
 final class NetworkService {
-    static let shared = NetworkService()
-    private init() {}
     
-    func fetchExercises() async throws -> [DTOExercise] {
+    func fetchExercises() async throws -> [ExerciseDTO] {
         guard let url = URL(string: "https://gymflow-backend-3a0w.onrender.com/exercises") else {
             throw NetworkError.invalidURL
         }
@@ -33,7 +31,7 @@ final class NetworkService {
         
         do {
             let decoder = JSONDecoder()
-            let exercise = try decoder.decode([DTOExercise].self, from: data)
+            let exercise = try decoder.decode([ExerciseDTO].self, from: data)
             return exercise
         } catch {
             throw NetworkError.decodingError

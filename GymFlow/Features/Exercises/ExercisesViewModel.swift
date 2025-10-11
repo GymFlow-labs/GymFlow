@@ -6,3 +6,24 @@
 //
 
 import Foundation
+
+@MainActor
+final class ExercisesViewModel: ObservableObject {
+    private let networkService: NetworkService
+    
+    @Published private(set) var exercises: [Exercise] = []
+    @Published var errorMessage: String?
+    
+    init(networkService: NetworkService) {
+        self.networkService = networkService
+    }
+    
+    func fetchExercises() async throws {
+        do {
+            let response = try await networkService.fetchExercises()
+            self.exercises = response.map { Exercise(from: $0) }
+        } catch {
+            print("[ExercisesViewModel]: Error fetching exercises: \(error.localizedDescription)")
+        }
+    }
+}

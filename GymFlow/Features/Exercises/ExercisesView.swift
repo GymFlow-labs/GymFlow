@@ -4,18 +4,19 @@
 //
 //  Created by Artem Kriukov on 05.10.2025.
 //
-#warning("Добавить состояние загрузки, вынести логику во VM")
+#warning("Добавить состояние загрузки(человечек подтягивается), вынести логику во VM")
 import SwiftUI
 
 struct ExercisesView: View {
     @State private var searchText = ""
     @State private var exerciseIsSelected = false
     
-    @Binding var selectedExercise: DTOExercise?
+    @Binding var selectedExercise: Exercise?
     @Environment(\.dismiss) var dismiss
     
-    @State private var exercises: [DTOExercise] = []
-    let network = NetworkService.shared
+    @StateObject private var viewModel = ExercisesViewModel(
+        networkService: NetworkService()
+    )
     
     var body: some View {
         VStack {
@@ -28,24 +29,30 @@ struct ExercisesView: View {
                     )
                 }
             }
+            .task {
+                await fetchExercises()
+            }
+            .alert("Ошибка", isPresented: .constant(viewModel.errorMessage != nil)) {
+                Button("Повторить") {
+                    viewModel.errorMessage = nil
+                    Task {
+                        await fetchExercises()
+                    }
+                }
+            } message: {
+                Text(viewModel.errorMessage ?? "")
+            }
         }
         .navigationTitle("Exercises")
         .searchable(
             text: $searchText,
             placement: .navigationBarDrawer(displayMode: .always)
         )
-        .onAppear {
-            Task {
-                do {
-                    exercises = try await network.fetchExercises()
-                } catch {
-                    print("Error: \(error.localizedDescription)")
-                }
-            }
-        }
     }
     
-    var searchResult: [DTOExercise] {
+    var searchResult: [Exercise] {
+        let exercises = viewModel.exercises
+        
         if searchText.isEmpty {
             return exercises
         } else {
@@ -53,6 +60,14 @@ struct ExercisesView: View {
                 exercise.name.localizedCaseInsensitiveContains(searchText) ||
                 exercise.nameRu.localizedCaseInsensitiveContains(searchText)
             }
+        }
+    }
+    
+    private func fetchExercises() async {
+        do {
+            try await viewModel.fetchExercises()
+        } catch {
+            viewModel.errorMessage = "Не удалось загрузить упражнение"
         }
     }
 }
@@ -66,8 +81,8 @@ struct SearchView: View {
 }
 
 struct ExerciseButtonView: View {
-    let exercise: DTOExercise
-    @Binding var selectedExercise: DTOExercise?
+    let exercise: Exercise
+    @Binding var selectedExercise: Exercise?
     let dismiss: DismissAction
     
     var body: some View {

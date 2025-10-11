@@ -1,5 +1,5 @@
 //
-//  DTOExercise.swift
+//  ExerciseDTO.swift
 //  GymFlow
 //
 //  Created by Artem Kriukov on 09.10.2025.

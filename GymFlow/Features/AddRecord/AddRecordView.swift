@@ -10,7 +10,7 @@ import SwiftUI
 struct AddRecordView: View {
     @State private var showCalendar = false
     
-    @State private var selectedExercise: DTOExercise?
+    @State private var selectedExercise: Exercise?
     @State private var weight = "1"
     @State private var selectedDate = Date()
     
@@ -106,7 +106,7 @@ struct RowButtonView: View {
                 .frame(width: 30, height: 30)
             
             Text(text)
-                .font(.body)
+                .font(.subheadline)
             Spacer()
             Image.chevron
                 .resizable()
