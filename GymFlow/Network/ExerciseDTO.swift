@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct DTOExercise: Codable {
+struct ExerciseDTO: Codable {
     let name: String
     let nameRu: String
     let category: String
