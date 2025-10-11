@@ -17,7 +17,11 @@ struct AddRecordView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: UIConstants.Spacing.large) {
-                NavigationLink(destination: ExercisesView(selectedExercise: $selectedExercise)) {
+                NavigationLink(
+                    destination: ExercisesView(
+                        selectedExercise: $selectedExercise
+                    )
+                ) {
 #warning("В зависимости от категории упражения менять иконку (textIcon) с ENUM!")
                     RowButtonView(
                         text: selectedExercise?.nameRu ?? "Выберите упражнение",
