@@ -9,7 +9,8 @@ import SwiftUI
 
 struct AddRecordView: View {
     @State private var showCalendar = false
-    
+    @State private var showError = false
+    @State private var errorMessage = ""
     @State private var selectedExercise: Exercise?
     @State private var weight = "1"
     @State private var selectedDate = Date()
@@ -49,15 +50,21 @@ struct AddRecordView: View {
                 Spacer()
                 
                 SaveButton {
-                    guard let exercise = selectedExercise,
-                          let doubleWeight = Double(weight) else {
-                        return
+                    Task {
+                        if let exercise = selectedExercise, let doubleWeight = Double(weight) {
+                            do {
+                                try await viewModel.addRecord(for: exercise, date: selectedDate, weight: doubleWeight)
+                            } catch {
+                                errorMessage = (error as NSError).localizedDescription
+                                showError = true
+                            }
+                        }
                     }
-                    viewModel.addRecord(
-                            for: exercise,
-                            date: selectedDate,
-                            weight: doubleWeight
-                        )
+                }
+                .alert("Ошибка сохранения", isPresented: $showError) {
+                    Button("Ок", role: .cancel) { }
+                } message: {
+                    Text(errorMessage)
                 }
                     
                     .padding(.bottom)

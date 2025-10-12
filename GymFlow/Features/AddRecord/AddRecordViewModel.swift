@@ -14,7 +14,7 @@ struct AddRecordViewModel {
         self.workoutRecordRepository = workoutRecordRepository
     }
     
-    func addRecord(for exercise: Exercise, date: Date, weight: Double) {
-        workoutRecordRepository.addRecord(for: exercise, date: date, weight: weight)
+    func addRecord(for exercise: Exercise, date: Date, weight: Double) async throws {
+        try await workoutRecordRepository.addRecord(for: exercise, date: date, weight: weight)
     }
 }

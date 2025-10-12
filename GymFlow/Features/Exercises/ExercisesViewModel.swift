@@ -18,7 +18,7 @@ final class ExercisesViewModel: ObservableObject {
         self.exercisesNetworkClient = exercisesNetworkClient
     }
     
-    func fetchExercises() async {
+    func fetchExercises() async throws {
         do {
             let response = try await exercisesNetworkClient.fetchExercises()
             self.exercises = response.map { Exercise(from: $0) }

@@ -17,28 +17,27 @@ final class WorkoutRecordsRepositories {
         self.context = coreDataStack.context
     }
     
-    func addRecord(for exercise: Exercise, date: Date, weight: Double) {
-        context.perform {
+    func addRecord(for exercise: Exercise, date: Date, weight: Double) async throws {
+        try await context.perform {
+            let exerciseEntity: Exercise1RM
+            if let existing = try Exercise1RMRepositories.fetch(by: exercise.id, in: self.context) {
+                exerciseEntity = existing
+            } else {
+                exerciseEntity = ExerciseEntityMapper.toEntity(exercise, context: self.context)
+            }
+            
+            _ = ExerciseRecordMapper.toEntity(
+                weight: weight,
+                date: date,
+                exerciseEntity: exerciseEntity,
+                context: self.context
+            )
+            
             do {
-                let exerciseEntity: Exercise1RM
-                if let existing = try Exercise1RMRepositories.fetch(by: exercise.id, in: self.context) {
-                    exerciseEntity = existing
-                } else {
-                    exerciseEntity = ExerciseEntityMapper.toEntity(exercise, context: self.context)
-                }
-                
-                _ = ExerciseRecordMapper.toEntity(
-                    weight: weight,
-                    date: date,
-                    exerciseEntity: exerciseEntity,
-                    context: self.context
-                )
-                
                 try self.context.save()
-                print("Record saved for exercise:", exercise.name)
             } catch {
                 self.context.rollback()
-                print("addRecord error:", error)
+                throw error
             }
         }
     }
