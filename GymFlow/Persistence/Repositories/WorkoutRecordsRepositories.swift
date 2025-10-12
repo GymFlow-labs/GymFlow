@@ -8,7 +8,12 @@
 import CoreData
 import Foundation
 
-final class WorkoutRecordsRepositories {
+protocol WorkoutRecordRepositoryProtocol {
+    func addRecord(for exercise: Exercise, date: Date, weight: Double) async throws
+    func fetchRecords(forExerciseID id: String) -> [WorkoutRecord]
+}
+
+final class WorkoutRecordsRepositories: WorkoutRecordRepositoryProtocol {
     private let coreDataStack: CoreDataStack
     private let context: NSManagedObjectContext
     

@@ -8,9 +8,9 @@
 import Foundation
 
 struct AddRecordViewModel {
-    private let workoutRecordRepository: WorkoutRecordsRepositories
+    private let workoutRecordRepository: WorkoutRecordRepositoryProtocol
     
-    init(workoutRecordRepository: WorkoutRecordsRepositories) {
+    init(workoutRecordRepository: WorkoutRecordRepositoryProtocol) {
         self.workoutRecordRepository = workoutRecordRepository
     }
     
