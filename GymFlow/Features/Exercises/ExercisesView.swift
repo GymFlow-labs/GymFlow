@@ -14,9 +14,12 @@ struct ExercisesView: View {
     @Binding var selectedExercise: Exercise?
     @Environment(\.dismiss) var dismiss
     
-    @StateObject private var viewModel = ExercisesViewModel(
-        networkService: NetworkClient()
-    )
+    @StateObject private var viewModel: ExercisesViewModel
+    
+    init(viewModel: ExercisesViewModel, selectedExercise: Binding<Exercise?>) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+        _selectedExercise = selectedExercise
+    }
     
     var body: some View {
         VStack {
@@ -109,8 +112,8 @@ struct ExerciseButtonView: View {
     }
 }
 
-#Preview {
-    NavigationStack {
-        ExercisesView(selectedExercise: .constant(nil))
-    }
-}
+//#Preview {
+//    NavigationStack {
+//        ExercisesView(selectedExercise: .constant(nil))
+//    }
+//}

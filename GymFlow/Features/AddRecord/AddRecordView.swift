@@ -15,20 +15,18 @@ struct AddRecordView: View {
     @State private var selectedDate = Date()
     
     private let viewModel: AddRecordViewModel
+    private let exercisesAssembly: ExercisesAssembly
     
-    init(
-        viewModel: AddRecordViewModel
-    ) {
+    init(viewModel: AddRecordViewModel, exercisesAssembly: ExercisesAssembly) {
         self.viewModel = viewModel
+        self.exercisesAssembly = exercisesAssembly
     }
     
     var body: some View {
         NavigationStack {
             VStack(spacing: UIConstants.Spacing.large) {
                 NavigationLink(
-                    destination: ExercisesView(
-                        selectedExercise: $selectedExercise
-                    )
+                    destination: exercisesAssembly.build(selectedExercise: $selectedExercise)
                 ) {
 #warning("В зависимости от категории упражения менять иконку (textIcon) с ENUM!")
                     RowButtonView(

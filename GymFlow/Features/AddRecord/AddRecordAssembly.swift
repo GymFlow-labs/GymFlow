@@ -9,9 +9,11 @@ import Foundation
 
 final class AddRecordAssembly {
     private let servicesAssembly: ServicesAssembly
+    private let exercisesAssembly: ExercisesAssembly
     
     init(servicesAssembly: ServicesAssembly) {
         self.servicesAssembly = servicesAssembly
+        self.exercisesAssembly = ExercisesAssembly(serviceAssembly: servicesAssembly)
     }
     
     func build() -> AddRecordView {
@@ -21,7 +23,7 @@ final class AddRecordAssembly {
             workoutRecordRepository: workoutService
         )
         
-        let view = AddRecordView(viewModel: viewModel)
+        let view = AddRecordView(viewModel: viewModel, exercisesAssembly: exercisesAssembly)
         return view
     }
 }

@@ -9,21 +9,22 @@ import Foundation
 
 @MainActor
 final class ExercisesViewModel: ObservableObject {
-    private let networkService: NetworkClient
+    private let exercisesNetworkClient: NetworkClient
     
     @Published private(set) var exercises: [Exercise] = []
     @Published var errorMessage: String?
     
-    init(networkService: NetworkClient) {
-        self.networkService = networkService
+    init(exercisesNetworkClient: NetworkClient) {
+        self.exercisesNetworkClient = exercisesNetworkClient
     }
     
-    func fetchExercises() async throws {
+    func fetchExercises() async {
         do {
-            let response = try await networkService.fetchExercises()
+            let response = try await exercisesNetworkClient.fetchExercises()
             self.exercises = response.map { Exercise(from: $0) }
+            self.errorMessage = nil
         } catch {
-            print("[ExercisesViewModel]: Error fetching exercises: \(error.localizedDescription)")
+            self.errorMessage = error.localizedDescription
         }
     }
 }

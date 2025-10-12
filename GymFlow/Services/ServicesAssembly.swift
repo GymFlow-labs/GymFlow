@@ -19,8 +19,16 @@ final class ServicesAssembly {
     private lazy var workoutService: WorkoutRecordsRepositories = {
         WorkoutRecordsRepositories(coreDataStack: coreDataStack)
     }()
+#warning("Переписать network")
+    private lazy var exercisesNetworkClient: NetworkClient = {
+        NetworkClient()
+    }()
     
     var workoutServiceImpl: WorkoutRecordsRepositories {
         workoutService
+    }
+    
+    var exercisesNetworkClientImpl: NetworkClient {
+        exercisesNetworkClient
     }
 }
