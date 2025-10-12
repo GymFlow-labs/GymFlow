@@ -9,12 +9,12 @@ import Foundation
 
 @MainActor
 final class ExercisesViewModel: ObservableObject {
-    private let networkService: NetworkService
+    private let networkService: NetworkClient
     
     @Published private(set) var exercises: [Exercise] = []
     @Published var errorMessage: String?
     
-    init(networkService: NetworkService) {
+    init(networkService: NetworkClient) {
         self.networkService = networkService
     }
     

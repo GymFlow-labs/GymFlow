@@ -14,7 +14,7 @@ enum NetworkError: Error {
     case serverError(statusCode: Int)
 }
 
-final class NetworkService {
+final class NetworkClient {
     
     func fetchExercises() async throws -> [ExerciseDTO] {
         guard let url = URL(string: "https://gymflow-backend-3a0w.onrender.com/exercises") else {

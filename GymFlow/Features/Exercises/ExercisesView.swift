@@ -15,7 +15,7 @@ struct ExercisesView: View {
     @Environment(\.dismiss) var dismiss
     
     @StateObject private var viewModel = ExercisesViewModel(
-        networkService: NetworkService()
+        networkService: NetworkClient()
     )
     
     var body: some View {

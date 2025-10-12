@@ -14,6 +14,14 @@ struct AddRecordView: View {
     @State private var weight = "1"
     @State private var selectedDate = Date()
     
+    private let viewModel: AddRecordViewModel
+    
+    init(
+        viewModel: AddRecordViewModel
+    ) {
+        self.viewModel = viewModel
+    }
+    
     var body: some View {
         NavigationStack {
             VStack(spacing: UIConstants.Spacing.large) {
@@ -43,15 +51,14 @@ struct AddRecordView: View {
                 Spacer()
                 
                 SaveButton {
-                    guard let exercise = selectedExercise else {
+                    guard let exercise = selectedExercise,
+                          let doubleWeight = Double(weight) else {
                         return
                     }
-
-                    WorkoutRecordsRepositories.shared
-                        .addRecord(
+                    viewModel.addRecord(
                             for: exercise,
                             date: selectedDate,
-                            weight: Double(weight) ?? 0
+                            weight: doubleWeight
                         )
                 }
                     
@@ -64,10 +71,9 @@ struct AddRecordView: View {
     }
 }
 
-
-#Preview {
-    AddRecordView()
-}
+//#Preview {
+//    AddRecordView()
+//}
 
 struct CalendarSheet: View {
     @Binding var selectedDate: Date

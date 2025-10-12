@@ -10,13 +10,26 @@ import UIKit
 
 final class MainTabBarController: UITabBarController {
 
+    var servicesAssembly: ServicesAssembly
+    
+    // MARK: - Init
+    init(servicesAssembly: ServicesAssembly) {
+        self.servicesAssembly = servicesAssembly
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTabBar()
     }
 
     private func setupTabBar() {
-        let addRecordView = AddRecordView()
+        let addRecordAssembly = AddRecordAssembly(servicesAssembly: servicesAssembly)
+        let addRecordView = addRecordAssembly.build()
         let addRecordVC = UIHostingController(rootView: addRecordView)
 
         let recordsListVC = RecordsListViewController()
