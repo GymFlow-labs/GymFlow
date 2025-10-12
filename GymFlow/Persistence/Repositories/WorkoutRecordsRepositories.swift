@@ -1,5 +1,5 @@
 //
-//  WorkoutRecordsStore.swift
+//  WorkoutRecordsRepositories.swift
 //  GymFlow
 //
 //  Created by Artem Kriukov on 12.10.2025.
@@ -9,10 +9,13 @@ import CoreData
 import Foundation
 
 final class WorkoutRecordsRepositories {
-    static let shared = WorkoutRecordsRepositories()
-    private init() {}
+    private let coreDataStack: CoreDataStack
+    private let context: NSManagedObjectContext
     
-    private let context = CoreDataStack.shared.context
+    init(coreDataStack: CoreDataStack) {
+        self.coreDataStack = coreDataStack
+        self.context = coreDataStack.context
+    }
     
     func addRecord(for exercise: Exercise, date: Date, weight: Double) {
         context.perform {
@@ -24,7 +27,7 @@ final class WorkoutRecordsRepositories {
                     exerciseEntity = ExerciseEntityMapper.toEntity(exercise, context: self.context)
                 }
                 
-                let record = ExerciseRecordMapper.toEntity(
+                _ = ExerciseRecordMapper.toEntity(
                     weight: weight,
                     date: date,
                     exerciseEntity: exerciseEntity,

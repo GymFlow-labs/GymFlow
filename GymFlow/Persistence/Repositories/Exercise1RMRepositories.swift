@@ -1,5 +1,5 @@
 //
-//  Exercise1RMStore.swift
+//  Exercise1RMRepositories.swift
 //  GymFlow
 //
 //  Created by Artem Kriukov on 12.10.2025.
@@ -9,10 +9,13 @@ import CoreData
 import Foundation
 
 final class Exercise1RMRepositories {
-    static let shared = Exercise1RMRepositories()
-    private init() {}
+    private let coreDataStack: CoreDataStack
+    private let context: NSManagedObjectContext
     
-    private let context = CoreDataStack.shared.context
+    init(coreDataStack: CoreDataStack) {
+        self.coreDataStack = coreDataStack
+        self.context = coreDataStack.context
+    }
     
     func save(_ exercise: Exercise) {
         context.perform {
