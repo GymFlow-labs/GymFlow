@@ -14,6 +14,14 @@ struct Exercise: Hashable {
     let description: String
     let id: String
     
+    init(name: String, nameRu: String, category: String, description: String, id: String) {
+        self.name = name
+        self.nameRu = nameRu
+        self.category = category
+        self.description = description
+        self.id = id
+    }
+    
     init(from dto: ExerciseDTO) {
         self.name = dto.name
         self.nameRu = dto.nameRu

@@ -43,7 +43,16 @@ struct AddRecordView: View {
                 Spacer()
                 
                 SaveButton {
-                    print(weight)
+                    guard let exercise = selectedExercise else {
+                        return
+                    }
+
+                    WorkoutRecordsRepositories.shared
+                        .addRecord(
+                            for: exercise,
+                            date: selectedDate,
+                            weight: Double(weight) ?? 0
+                        )
                 }
                     
                     .padding(.bottom)
@@ -54,6 +63,7 @@ struct AddRecordView: View {
         }
     }
 }
+
 
 #Preview {
     AddRecordView()
