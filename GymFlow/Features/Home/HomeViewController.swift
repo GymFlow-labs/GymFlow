@@ -8,8 +8,7 @@
 import SwiftUI
 import UIKit
 
-final class HomeViewController: UIViewController {
-    
+final class HomeViewController: UIViewController {    
     private lazy var stackView: UIStackView = {
         let element = UIStackView()
         element.axis = .vertical
@@ -24,9 +23,9 @@ final class HomeViewController: UIViewController {
         setupViews()
         setupConstraints()
     }
-    
+
     private func recordsButtonTapped() {
-        print("▶️ recordsButtonTapped ")
+
     }
     
     private func testsButtonTapped() {
@@ -65,14 +64,14 @@ private extension HomeViewController {
 }
 
 private extension HomeViewController {
-    private func makeButton(title: String, icon: Image, action: @escaping () -> Void) -> UIView {
+    func makeButton(title: String, icon: Image, action: @escaping () -> Void) -> UIView {
         let swiftUIButton = RowButtonView(text: title, textIcon: icon)
             .onTapGesture { action() }
         
-        let host = UIHostingController(rootView: swiftUIButton)
-        host.view.translatesAutoresizingMaskIntoConstraints = false
-        host.view.backgroundColor = .clear
+        let hosting = UIHostingController(rootView: swiftUIButton)
+        hosting.view.translatesAutoresizingMaskIntoConstraints = false
+        hosting.view.backgroundColor = .clear
         
-        return host.view
+        return hosting.view
     }
 }
