@@ -8,21 +8,42 @@
 import SwiftUI
 
 struct AddRecordView: View {
-    @State private var weight = "1"
     @State private var showCalendar = false
-    @State private var selectedDate = Date()
+    @State private var showError = false
+    @State private var errorMessage = ""
+    @State private var selectedExercise: Exercise?
+    @State private var weight = "1"
+    @State private var selectedDate: Date? = nil
+    
+    private let viewModel: AddRecordViewModel
+    private let exercisesAssembly: ExercisesAssembly
+    
+    init(viewModel: AddRecordViewModel, exercisesAssembly: ExercisesAssembly) {
+        self.viewModel = viewModel
+        self.exercisesAssembly = exercisesAssembly
+    }
     
     var body: some View {
         NavigationStack {
             VStack(spacing: UIConstants.Spacing.large) {
-                NavigationLink(destination: ExercisesView()) {
-                    RowButtonView(text: "упражнение", textIcon: .barbell)
+                NavigationLink(
+                    destination: exercisesAssembly.build(selectedExercise: $selectedExercise)
+                ) {
+                    RowButtonView(
+                        text: selectedExercise?.nameRu ?? "Выберите упражнение",
+                        textIcon: .barbell
+                    )
                 }
                 .padding(.top)
                 
                 TextFieldView(weight: $weight)
                 
-                RowButtonView(text: "Календарь", textIcon: .calendar) {
+                RowButtonView(
+                    text: selectedDate.map {
+                        $0.formatted(date: .long, time: .omitted)
+                    } ?? "Выберите дату",
+                    textIcon: .calendar
+                ) {
                     showCalendar = true
                 }
                 .sheet(isPresented: $showCalendar) {
@@ -33,40 +54,66 @@ struct AddRecordView: View {
                 Spacer()
                 
                 SaveButton {
-                    print(weight)
+                    saveRecord()
                 }
-                    
-                    .padding(.bottom)
+                .alert("Ошибка сохранения", isPresented: $showError) {
+                    Button("Ок", role: .cancel) { }
+                } message: {
+                    Text(errorMessage)
+                }
+                
+                .padding(.bottom)
             }
             .padding(.horizontal)
             .navigationTitle("Новый рекорд")
             .background(Color.backgroundColor)
         }
     }
-}
-
-#Preview {
-    AddRecordView()
+    
+    private func saveRecord() {
+        Task {
+            if let exercise = selectedExercise,
+               let doubleWeight = Double(weight),
+               let date = selectedDate {
+                do {
+                    try await viewModel.addRecord(for: exercise, date: date, weight: doubleWeight)
+                } catch {
+                    errorMessage = (error as NSError).localizedDescription
+                    showError = true
+                }
+            } else {
+                errorMessage = "Заполните все поля перед сохранением."
+                showError = true
+            }
+        }
+    }
 }
 
 struct CalendarSheet: View {
-    @Binding var selectedDate: Date
+    @Binding var selectedDate: Date?
     @Environment(\.dismiss) var dismiss
+    @State private var tempDate = Date()
     
     var body: some View {
         VStack {
             DatePicker(
                 "Выберите дату",
-                selection: $selectedDate,
+                selection: $tempDate,
                 displayedComponents: .date
             )
             .datePickerStyle(.graphical)
             .padding()
             
             Button("Готово") {
+                selectedDate = tempDate
                 dismiss()
             }
             .padding()
+        }
+        .onAppear {
+            if let selectedDate {
+                tempDate = selectedDate
+            }
         }
     }
 }
@@ -100,7 +147,7 @@ struct RowButtonView: View {
                 .frame(width: 30, height: 30)
             
             Text(text)
-                .font(.title3)
+                .font(.subheadline)
             Spacer()
             Image.chevron
                 .resizable()

@@ -11,6 +11,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
 
+    let servicesAssembly = ServicesAssembly(
+        networkClient: NetworkClient(),
+        coreDataStack: CoreDataStack()
+    )
+    
     func scene(
         _ scene: UIScene,
         willConnectTo session: UISceneSession,
@@ -18,7 +23,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
-        window?.rootViewController = MainTabBarController()
+        window?.rootViewController = MainTabBarController(servicesAssembly: servicesAssembly)
         window?.frame = windowScene.coordinateSpace.bounds
         window?.makeKeyAndVisible()
     }
