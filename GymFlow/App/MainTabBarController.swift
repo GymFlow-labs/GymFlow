@@ -28,6 +28,8 @@ final class MainTabBarController: UITabBarController {
     }
 
     private func setupTabBar() {
+        let homeVC = HomeViewController()
+        
         let addRecordAssembly = AddRecordAssembly(servicesAssembly: servicesAssembly)
         let addRecordView = addRecordAssembly.build()
         let addRecordVC = UIHostingController(rootView: addRecordView)
@@ -35,20 +37,27 @@ final class MainTabBarController: UITabBarController {
         let recordsListVC = RecordsListViewController()
 
         viewControllers = [
+            homeVC,
             addRecordVC,
             recordsListVC
         ]
 
+        homeVC.tabBarItem = UITabBarItem(
+            title: "Главная",
+            image: UIImage(systemName: "house"),
+            tag: 0
+        )
+        
         addRecordVC.tabBarItem = UITabBarItem(
             title: "Add",
             image: UIImage(systemName: "calendar.circle"),
-            tag: 0
+            tag: 1
         )
 
         recordsListVC.tabBarItem = UITabBarItem(
             title: "List",
             image: UIImage(systemName: "person.circle.fill"),
-            tag: 1
+            tag: 2
         )
     }
 }

@@ -39,4 +39,18 @@ extension Image {
     static var chevron: Image {
         .from(R.image.chevron())
     }
+    
+    // MARK: - Home Icons
+    
+    static var records: Image {
+        .from(R.image.records())
+    }
+    
+    static var tests: Image {
+        .from(R.image.tests())
+    }
+    
+    static var training: Image {
+        .from(R.image.training())
+    }
 }
