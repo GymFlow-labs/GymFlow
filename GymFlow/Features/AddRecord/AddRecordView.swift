@@ -13,7 +13,7 @@ struct AddRecordView: View {
     @State private var errorMessage = ""
     @State private var selectedExercise: Exercise?
     @State private var weight = "1"
-    @State private var selectedDate = Date()
+    @State private var selectedDate: Date? = nil
     
     private let viewModel: AddRecordViewModel
     private let exercisesAssembly: ExercisesAssembly
@@ -29,7 +29,6 @@ struct AddRecordView: View {
                 NavigationLink(
                     destination: exercisesAssembly.build(selectedExercise: $selectedExercise)
                 ) {
-#warning("В зависимости от категории упражения менять иконку (textIcon) с ENUM!")
                     RowButtonView(
                         text: selectedExercise?.nameRu ?? "Выберите упражнение",
                         textIcon: .barbell
@@ -39,7 +38,12 @@ struct AddRecordView: View {
                 
                 TextFieldView(weight: $weight)
                 
-                RowButtonView(text: "Календарь", textIcon: .calendar) {
+                RowButtonView(
+                    text: selectedDate.map {
+                        $0.formatted(date: .long, time: .omitted)
+                    } ?? "Выберите дату",
+                    textIcon: .calendar
+                ) {
                     showCalendar = true
                 }
                 .sheet(isPresented: $showCalendar) {
@@ -50,54 +54,66 @@ struct AddRecordView: View {
                 Spacer()
                 
                 SaveButton {
-                    Task {
-                        if let exercise = selectedExercise, let doubleWeight = Double(weight) {
-                            do {
-                                try await viewModel.addRecord(for: exercise, date: selectedDate, weight: doubleWeight)
-                            } catch {
-                                errorMessage = (error as NSError).localizedDescription
-                                showError = true
-                            }
-                        }
-                    }
+                    saveRecord()
                 }
                 .alert("Ошибка сохранения", isPresented: $showError) {
                     Button("Ок", role: .cancel) { }
                 } message: {
                     Text(errorMessage)
                 }
-                    
-                    .padding(.bottom)
+                
+                .padding(.bottom)
             }
             .padding(.horizontal)
             .navigationTitle("Новый рекорд")
             .background(Color.backgroundColor)
         }
     }
+    
+    private func saveRecord() {
+        Task {
+            if let exercise = selectedExercise,
+               let doubleWeight = Double(weight),
+               let date = selectedDate {
+                do {
+                    try await viewModel.addRecord(for: exercise, date: date, weight: doubleWeight)
+                } catch {
+                    errorMessage = (error as NSError).localizedDescription
+                    showError = true
+                }
+            } else {
+                errorMessage = "Заполните все поля перед сохранением."
+                showError = true
+            }
+        }
+    }
 }
 
-//#Preview {
-//    AddRecordView()
-//}
-
 struct CalendarSheet: View {
-    @Binding var selectedDate: Date
+    @Binding var selectedDate: Date?
     @Environment(\.dismiss) var dismiss
+    @State private var tempDate = Date()
     
     var body: some View {
         VStack {
             DatePicker(
                 "Выберите дату",
-                selection: $selectedDate,
+                selection: $tempDate,
                 displayedComponents: .date
             )
             .datePickerStyle(.graphical)
             .padding()
             
             Button("Готово") {
+                selectedDate = tempDate
                 dismiss()
             }
             .padding()
+        }
+        .onAppear {
+            if let selectedDate {
+                tempDate = selectedDate
+            }
         }
     }
 }
