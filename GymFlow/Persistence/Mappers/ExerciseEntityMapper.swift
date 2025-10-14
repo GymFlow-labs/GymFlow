@@ -20,11 +20,11 @@ struct ExerciseEntityMapper {
 
     static func toDomain(_ entity: Exercise1RM) -> Exercise {
         Exercise(
-            name: entity.id ?? "",
-            nameRu: entity.nameEn ?? "",
-            category: entity.nameRu ?? "",
+            name: entity.nameEn ?? "",
+            nameRu: entity.nameRu ?? "",
+            category: entity.category ?? "",
             description: entity.descr ?? "",
-            id: entity.category ?? ""
+            id: entity.id ?? ""
         )
     }
 }

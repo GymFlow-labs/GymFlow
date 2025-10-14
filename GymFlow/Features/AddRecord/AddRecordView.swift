@@ -13,7 +13,7 @@ struct AddRecordView: View {
     @State private var errorMessage = ""
     @State private var selectedExercise: Exercise?
     @State private var weight = "1"
-    @State private var selectedDate: Date? = nil
+    @State private var selectedDate: Date?
     
     private let viewModel: AddRecordViewModel
     private let exercisesAssembly: ExercisesAssembly

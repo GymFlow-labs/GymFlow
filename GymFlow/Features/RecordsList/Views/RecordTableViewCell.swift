@@ -146,10 +146,10 @@ final class RecordTableViewCell: UITableViewCell, ReuseIdentifying {
     
     // MARK: - Configure
     
-    func configure(with item: RecordViewItem) {
-        titleLabel.text = item.title
-        dateLabel.text = DateFormatter.displayFormatter.string(from: item.date)
-        valueLabel.text = item.valueText
+    func configure(with item: Exercise) {
+        titleLabel.text = item.nameRu
+//        dateLabel.text = DateFormatter.displayFormatter.string(from: item.date)
+//        valueLabel.text = item.valueText
     }
     
     override func prepareForReuse() {

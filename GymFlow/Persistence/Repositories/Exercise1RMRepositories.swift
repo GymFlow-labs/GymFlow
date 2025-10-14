@@ -8,7 +8,12 @@
 import CoreData
 import Foundation
 
-final class Exercise1RMRepositories {
+protocol Exercise1RMProtocol {
+    func save(_ exercise: Exercise)
+    func fetchAll() -> [Exercise]
+}
+
+final class Exercise1RMRepositories: Exercise1RMProtocol {
     private let coreDataStack: CoreDataStack
     private let context: NSManagedObjectContext
     

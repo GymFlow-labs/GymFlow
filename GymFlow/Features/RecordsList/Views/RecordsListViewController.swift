@@ -16,9 +16,11 @@ struct RecordViewItem {
 }
 
 final class RecordsListViewController: UIViewController {
+    // MARK: - Data
+    
+    private let viewModel: RecordListViewModelProtocol
     
     // MARK: - UI
-    
     private lazy var recordsTableView: UITableView = {
         let element = UITableView()
         element.dataSource = self
@@ -31,19 +33,29 @@ final class RecordsListViewController: UIViewController {
         return element
     }()
     
-    // MARK: - Data
-    
-    private var items: [RecordViewItem] = []
-    
     // MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         loadData()
     }
-    // MARK: - Private Methods
     
+    // MARK: - Init
+    init(viewModel: RecordListViewModelProtocol) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - Private Methods
     private func setupViews() {
         view.backgroundColor = R.color.backgroundColor()
         view.addSubview(recordsTableView)
@@ -57,11 +69,11 @@ final class RecordsListViewController: UIViewController {
     }
     
     private func loadData() {
-        items = [
-            RecordViewItem(title: "Жим лёжа", date: Date(), valueText: "100 кг "),
-            RecordViewItem(title: "Присед", date: Date().addingTimeInterval(-86400), valueText: "140 кг"),
-            RecordViewItem(title: "Тяга", date: Date().addingTimeInterval(-3*86400), valueText: "160 кг")
-        ]
+        viewModel.fetchRecords { [weak self] in
+            DispatchQueue.main.async {
+                self?.recordsTableView.reloadData()
+            }
+        }
     }
 }
 
@@ -69,12 +81,12 @@ final class RecordsListViewController: UIViewController {
 
 extension RecordsListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        items.count
+        viewModel.exercises.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: RecordTableViewCell = tableView.dequeueReusableCell()
-        let model = items[indexPath.row]
+        let model = viewModel.exercises[indexPath.row]
         cell.configure(with: model)
         return cell
     }

@@ -21,6 +21,8 @@ final class CoreDataStack {
                 assertionFailure("Ошибка при загрузке хранилища Core Data: \(error)")
             }
         }
+        
+        container.viewContext.automaticallyMergesChangesFromParent = true
         return container
     }()
     
