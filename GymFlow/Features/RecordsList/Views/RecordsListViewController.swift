@@ -7,14 +7,6 @@
 
 import UIKit
 
-import Foundation
-
-struct RecordViewItem {
-    let title: String
-    let date: Date
-    let valueText: String
-}
-
 final class RecordsListViewController: UIViewController {
     // MARK: - Data
     

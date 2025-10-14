@@ -38,12 +38,7 @@ final class WorkoutRecordsRepositories: WorkoutRecordRepositoryProtocol {
                 context: self.context
             )
             
-            do {
-                try self.context.save()
-            } catch {
-                self.context.rollback()
-                throw error
-            }
+            self.coreDataStack.saveContext()
         }
     }
     
