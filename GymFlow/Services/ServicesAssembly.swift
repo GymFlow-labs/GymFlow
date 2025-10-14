@@ -16,10 +16,14 @@ final class ServicesAssembly {
         self.coreDataStack = coreDataStack
     }
     
+    private lazy var exercise1RMRepositories: Exercise1RMProtocol = {
+        Exercise1RMRepositories(coreDataStack: coreDataStack)
+    }()
+    
     private lazy var workoutService: WorkoutRecordRepositoryProtocol = {
         WorkoutRecordsRepositories(coreDataStack: coreDataStack)
     }()
-#warning("Переписать network")
+
     private lazy var exercisesNetworkClient: ExercisesAPIProtocol = {
         NetworkClient()
     }()
@@ -30,5 +34,9 @@ final class ServicesAssembly {
     
     var exercisesNetworkClientImpl: ExercisesAPIProtocol {
         exercisesNetworkClient
+    }
+    
+    var exercise1RMRepositoriesImpl: Exercise1RMProtocol {
+        exercise1RMRepositories
     }
 }

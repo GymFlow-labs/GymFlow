@@ -32,7 +32,8 @@ final class MainTabBarController: UITabBarController {
         let addRecordView = addRecordAssembly.build()
         let addRecordVC = UIHostingController(rootView: addRecordView)
 
-        let recordsListVC = RecordsListViewController()
+        let recordsListAssembly = RecordsListAssembly(serviceAssembly: servicesAssembly)
+        let recordsListVC = recordsListAssembly.build()
 
         viewControllers = [
             addRecordVC,

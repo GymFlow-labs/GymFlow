@@ -111,9 +111,3 @@ struct ExerciseButtonView: View {
         .buttonStyle(.plain)
     }
 }
-
-//#Preview {
-//    NavigationStack {
-//        ExercisesView(selectedExercise: .constant(nil))
-//    }
-//}
