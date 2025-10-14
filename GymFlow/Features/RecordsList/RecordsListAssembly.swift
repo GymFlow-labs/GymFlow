@@ -17,7 +17,10 @@ struct RecordsListAssembly {
     func build() -> RecordsListViewController {
         let exerciseService = serviceAssembly.exercise1RMRepositoriesImpl
         let viewModel = RecordsListViewModel(exercise1RMRepositories: exerciseService)
-        let viewController = RecordsListViewController(viewModel: viewModel)
+        let viewController = RecordsListViewController(
+            viewModel: viewModel,
+            servicesAssembly: serviceAssembly
+        )
         return viewController
     }
 }

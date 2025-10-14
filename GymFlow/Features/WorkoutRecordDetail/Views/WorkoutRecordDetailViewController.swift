@@ -7,14 +7,9 @@
 
 import UIKit
 
-struct WorkoutRecordItem {
-    let date: Date
-    let weight: Double
-    let unit: String
-}
-
-final class WorkoutRecordDetail: UIViewController {
-    private var items: [WorkoutRecordItem] = []
+final class WorkoutRecordDetailViewController: UIViewController {
+    private let exercise: Exercise
+    private let viewModel: WorkoutRecordDetailViewModelProtocol
     // MARK: - UI
     private lazy var tableView: UITableView = {
         let element = UITableView()
@@ -29,7 +24,9 @@ final class WorkoutRecordDetail: UIViewController {
     }()
     
     // MARK: - Init
-    init() {
+    init(exercise: Exercise, viewModel: WorkoutRecordDetailViewModelProtocol) {
+        self.exercise = exercise
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -41,38 +38,33 @@ final class WorkoutRecordDetail: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupLayout()
-        loadMockData()
+        loadRecords()
     }
-    
-    func loadMockData() {
-        var mock: [WorkoutRecordItem] = []
-        let now = Date()
-        for i in 0..<10 {
-            let date = Calendar.current.date(byAdding: .day, value: -i * 3, to: now) ?? now
-            // Небольшой разброс веса вокруг 100
-            let weight = 100.0 + Double(Int.random(in: -10...15))
-            mock.append(WorkoutRecordItem(date: date, weight: weight, unit: "кг"))
+
+    private func loadRecords() {
+        let exerciseID = exercise.id
+        viewModel.fetchWorkoutRecords(for: exerciseID) {
+            DispatchQueue.main.async { [weak self] in
+                self?.tableView.reloadData()
+            }
         }
-        // От нового к старому
-        items = mock.sorted(by: { $0.date > $1.date })
-        tableView.reloadData()
     }
 }
 
-extension WorkoutRecordDetail: UITableViewDataSource, UITableViewDelegate {
+extension WorkoutRecordDetailViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        items.count
+        viewModel.workoutRecord.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: RecordDetailCell = tableView.dequeueReusableCell()
-        let data = items[indexPath.row]
+        let data = viewModel.workoutRecord[indexPath.row]
         cell.configure(with: data)
         return cell
     }
 }
 
-private extension WorkoutRecordDetail {
+private extension WorkoutRecordDetailViewController {
     func setupLayout() {
         view.backgroundColor = R.color.backgroundColor()
         view.addSubview(tableView)

@@ -17,7 +17,7 @@ final class AddRecordAssembly {
     }
     
     func build() -> AddRecordView {
-        let workoutService = servicesAssembly.workoutServiceImpl
+        let workoutService = servicesAssembly.workoutRecordServiceImpl
         
         let viewModel = AddRecordViewModel(
             workoutRecordRepository: workoutService

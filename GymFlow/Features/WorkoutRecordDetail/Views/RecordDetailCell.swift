@@ -101,8 +101,7 @@ final class RecordDetailCell: UITableViewCell, ReuseIdentifying {
     }
 
     // MARK: - Public
-    func configure(with item: WorkoutRecordItem) {
-        
+    func configure(with item: WorkoutRecord) {
         dateValueLabel.text = DateFormatter.displayFormatter.string(from: item.date)
         weightValueLabel.text = String(item.weight)
     }

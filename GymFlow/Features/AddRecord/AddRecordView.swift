@@ -15,7 +15,7 @@ struct AddRecordView: View {
     @State private var weight = "1"
     @State private var selectedDate: Date?
     
-    private let viewModel: AddRecordViewModel
+    private let viewModel: AddRecordViewModelProtocol
     private let exercisesAssembly: ExercisesAssembly
     
     init(viewModel: AddRecordViewModel, exercisesAssembly: ExercisesAssembly) {
