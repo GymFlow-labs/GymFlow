@@ -12,7 +12,6 @@ final class ExercisesViewModel: ObservableObject {
     private let exercisesNetworkClient: ExercisesAPIProtocol
     
     @Published private(set) var exercises: [Exercise] = []
-    @Published var errorMessage: String?
     
     init(exercisesNetworkClient: ExercisesAPIProtocol) {
         self.exercisesNetworkClient = exercisesNetworkClient
@@ -22,9 +21,8 @@ final class ExercisesViewModel: ObservableObject {
         do {
             let response = try await exercisesNetworkClient.fetchExercises()
             self.exercises = response.map { Exercise(from: $0) }
-            self.errorMessage = nil
         } catch {
-            self.errorMessage = error.localizedDescription
+            print("[ExercisesViewModel -> fetchExercises] Error: \(error)]")
         }
     }
 }
