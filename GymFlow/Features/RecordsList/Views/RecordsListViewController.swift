@@ -7,19 +7,10 @@
 
 import UIKit
 
-import Foundation
-
-struct RecordViewItem {
-    let title: String
-    let date: Date
-    let valueText: String
-}
-
 final class RecordsListViewController: UIViewController {
     // MARK: - Data
-    
     private let viewModel: RecordListViewModelProtocol
-    
+    private let servicesAssembly: ServicesAssembly
     // MARK: - UI
     private lazy var recordsTableView: UITableView = {
         let element = UITableView()
@@ -46,8 +37,9 @@ final class RecordsListViewController: UIViewController {
     }
     
     // MARK: - Init
-    init(viewModel: RecordListViewModelProtocol) {
+    init(viewModel: RecordListViewModelProtocol, servicesAssembly: ServicesAssembly) {
         self.viewModel = viewModel
+        self.servicesAssembly = servicesAssembly
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -104,7 +96,11 @@ extension RecordsListViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-        // Хэндлер перехода/подробностей при необходимости
+        let exercise = viewModel.exercises[indexPath.row]
+        let workoutAssembly = WorkoutRecordDetailAssembly(serviceAssembly: servicesAssembly)
+        let workoutVC = workoutAssembly.build(with: exercise)
+        let nav = UINavigationController(rootViewController: workoutVC)
+        nav.modalPresentationStyle = .formSheet
+        present(nav, animated: true)
     }
 }

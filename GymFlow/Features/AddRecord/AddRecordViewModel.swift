@@ -7,7 +7,11 @@
 
 import Foundation
 
-struct AddRecordViewModel {
+protocol AddRecordViewModelProtocol {
+    func addRecord(for exercise: Exercise, date: Date, weight: Double) async throws
+}
+
+struct AddRecordViewModel: AddRecordViewModelProtocol {
     private let workoutRecordRepository: WorkoutRecordRepositoryProtocol
     
     init(workoutRecordRepository: WorkoutRecordRepositoryProtocol) {

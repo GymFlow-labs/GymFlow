@@ -20,7 +20,7 @@ final class ServicesAssembly {
         Exercise1RMRepositories(coreDataStack: coreDataStack)
     }()
     
-    private lazy var workoutService: WorkoutRecordRepositoryProtocol = {
+    private lazy var workoutRecordService: WorkoutRecordRepositoryProtocol = {
         WorkoutRecordsRepositories(coreDataStack: coreDataStack)
     }()
 
@@ -28,8 +28,8 @@ final class ServicesAssembly {
         NetworkClient()
     }()
     
-    var workoutServiceImpl: WorkoutRecordRepositoryProtocol {
-        workoutService
+    var workoutRecordServiceImpl: WorkoutRecordRepositoryProtocol {
+        workoutRecordService
     }
     
     var exercisesNetworkClientImpl: ExercisesAPIProtocol {
