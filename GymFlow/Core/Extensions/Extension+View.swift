@@ -22,9 +22,3 @@ extension View {
         ])
     }
 }
-
-extension View {
-    func showToastView(message: String, type: ToastType) {
-        
-    }
-}
