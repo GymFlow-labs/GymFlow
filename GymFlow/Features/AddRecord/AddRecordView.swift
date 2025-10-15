@@ -163,7 +163,7 @@ struct TextFieldView: View {
             TextField("Рекордный вес", text: $weight)
                 .font(.largeTitle)
                 .foregroundStyle(Color.primaryTextColor)
-                .keyboardType(.decimalPad)
+                .keyboardType(.numberPad)
             
             Text(unit)
                 .font(.title2)
