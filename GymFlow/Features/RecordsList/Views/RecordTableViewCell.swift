@@ -89,6 +89,7 @@ final class RecordTableViewCell: UITableViewCell, ReuseIdentifying {
         let element = UIImageView()
         element.image = R.image.chevron()
         element.contentMode = .scaleAspectFit
+        element.tintColor = R.color.primaryTextColor()
         element.setContentHuggingPriority(.required, for: .horizontal)
         element.setContentCompressionResistancePriority(.required, for: .horizontal)
         element.translatesAutoresizingMaskIntoConstraints = false
@@ -139,8 +140,8 @@ final class RecordTableViewCell: UITableViewCell, ReuseIdentifying {
             mainHStack.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -inset),
             mainHStack.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -inset),
             
-            chevronView.widthAnchor.constraint(equalToConstant: 12),
-            chevronView.heightAnchor.constraint(equalToConstant: 18)
+            chevronView.widthAnchor.constraint(equalToConstant: 24),
+            chevronView.heightAnchor.constraint(equalToConstant: 24)
         ])
     }
     
