@@ -97,6 +97,10 @@ extension WorkoutRecordDetailViewController: UITableViewDataSource, UITableViewD
                 done(success)
             }
         }
+        
+        delete.image = R.image.trashbin()
+        delete.backgroundColor = R.color.accentRedColor()
+        
         let config = UISwipeActionsConfiguration(actions: [delete])
         config.performsFirstActionWithFullSwipe = true
         return config
