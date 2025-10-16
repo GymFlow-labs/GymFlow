@@ -49,6 +49,22 @@ final class WorkoutRecordDetailViewController: UIViewController {
             }
         }
     }
+    
+    private func deleteRow(at indexPath: IndexPath, in tableView: UITableView) async -> Bool {
+        do {
+            try await viewModel.deleteRecord(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .automatic)
+            showSwiftUIToast(message: "Запись удалена", type: .success)
+            if viewModel.workoutRecord.isEmpty {
+                navigationController?.popViewController(animated: true)
+            }
+            return true
+        } catch {
+            showSwiftUIToast(message: "Не удалось удалить запись", type: .error)
+            tableView.reloadRows(at: [indexPath], with: .none)
+            return false
+        }
+    }
 }
 
 extension WorkoutRecordDetailViewController: UITableViewDataSource, UITableViewDelegate {
@@ -73,32 +89,16 @@ extension WorkoutRecordDetailViewController: UITableViewDataSource, UITableViewD
         _ tableView: UITableView,
         trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath
     ) -> UISwipeActionsConfiguration? {
+        
         let delete = UIContextualAction(style: .destructive, title: nil) { [weak self] _, _, done in
             guard let self else { return }
-            
             Task { @MainActor in
-                do {
-                    try await self.viewModel.deleteRecord(at: indexPath.row)
-                    tableView.deleteRows(at: [indexPath], with: .automatic)
-                    self.showSwiftUIToast(message: "Запись удалена", type: .success, fromBottom: true)
-                    
-                    if self.viewModel.workoutRecord.isEmpty {
-                        self.navigationController?.popViewController(animated: true)
-                    }
-                    
-                    done(true)
-                } catch {
-                    tableView.reloadRows(at: [indexPath], with: .none)
-                    done(false)
-                }
+                let success = await self.deleteRow(at: indexPath, in: tableView)
+                done(success)
             }
         }
-        delete.image = R.image.trashbin()
-        delete.backgroundColor = .systemRed
-
         let config = UISwipeActionsConfiguration(actions: [delete])
         config.performsFirstActionWithFullSwipe = true
-
         return config
     }
 }
