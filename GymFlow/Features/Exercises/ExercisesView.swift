@@ -4,7 +4,7 @@
 //
 //  Created by Artem Kriukov on 05.10.2025.
 //
-#warning("Добавить состояние загрузки(человечек подтягивается), вынести логику во VM")
+
 import SwiftUI
 
 struct ExercisesView: View {
@@ -25,39 +25,48 @@ struct ExercisesView: View {
     }
     
     var body: some View {
-        VStack {
-            List {
-                ForEach(searchResult, id: \.id) { exercise in
-                    ExerciseButtonView(
-                        exercise: exercise,
-                        selectedExercise: $selectedExercise,
-                        dismiss: dismiss
-                    )
+        ZStack {
+            VStack {
+                List {
+                    ForEach(searchResult, id: \.id) { exercise in
+                        ExerciseButtonView(
+                            exercise: exercise,
+                            selectedExercise: $selectedExercise,
+                            dismiss: dismiss
+                        )
+                    }
+                }
+                .listStyle(.plain)
+                .task {
+                    await fetchExercises()
                 }
             }
-            .task {
-                await fetchExercises()
-            }
-        }
-        .navigationTitle("Exercises")
-        .searchable(
-            text: $searchText,
-            placement: .navigationBarDrawer(displayMode: .always)
-        )
-        .overlay(alignment: .top) {
-            if showToast {
-                ToastView(message: toastMessage, type: toastType) {
-                    withAnimation(.easeInOut) { showToast = false }
-                }
-                .transition(.move(edge: .top).combined(with: .opacity))
-                .onAppear {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            .navigationTitle("Exercises")
+            .searchable(
+                text: $searchText,
+                placement: .navigationBarDrawer(displayMode: .always)
+            )
+            .overlay(alignment: .top) {
+                if showToast {
+                    ToastView(message: toastMessage, type: toastType) {
                         withAnimation(.easeInOut) { showToast = false }
+                    }
+                    .transition(.move(edge: .top).combined(with: .opacity))
+                    .onAppear {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                            withAnimation(.easeInOut) { showToast = false }
+                        }
                     }
                 }
             }
+            .animation(.easeInOut, value: showToast)
+
+            if viewModel.isLoading {
+                Color.black.opacity(0.25)
+                    .ignoresSafeArea()
+                LoaderView()
+            }
         }
-        .animation(.easeInOut, value: showToast)
     }
     
     var searchResult: [Exercise] {
