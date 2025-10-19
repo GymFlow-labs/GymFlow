@@ -13,9 +13,14 @@ final class MainTabBarController: UITabBarController {
     var servicesAssembly: ServicesAssembly
     
     // MARK: - Init
-    init(servicesAssembly: ServicesAssembly) {
+    init(servicesAssembly: ServicesAssembly, childCoordinators: [Coordinator]) {
         self.servicesAssembly = servicesAssembly
         super.init(nibName: nil, bundle: nil)
+        
+        viewControllers = childCoordinators.map { coordinator in
+            let vc = coordinator.start()
+            return UINavigationController(rootViewController: vc)
+        }
     }
 
     required init?(coder: NSCoder) {
