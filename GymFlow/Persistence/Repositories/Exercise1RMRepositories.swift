@@ -43,6 +43,7 @@ final class Exercise1RMRepositories: Exercise1RMProtocol {
     
     func fetchAll() -> [Exercise] {
         let request: NSFetchRequest<Exercise1RM> = Exercise1RM.fetchRequest()
+        request.predicate = NSPredicate(format: "records.@count > 0")
         let entities = (try? context.fetch(request)) ?? []
         return entities.map { ExerciseEntityMapper.toDomain($0) }
     }

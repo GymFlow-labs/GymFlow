@@ -49,18 +49,61 @@ final class WorkoutRecordDetailViewController: UIViewController {
             }
         }
     }
+    
+    private func deleteRow(at indexPath: IndexPath, in tableView: UITableView) async -> Bool {
+        do {
+            try await viewModel.deleteRecord(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .automatic)
+            showSwiftUIToast(message: "Запись удалена", type: .success)
+            if viewModel.workoutRecord.isEmpty {
+                navigationController?.popViewController(animated: true)
+            }
+            return true
+        } catch {
+            showSwiftUIToast(message: "Не удалось удалить запись", type: .error)
+            tableView.reloadRows(at: [indexPath], with: .none)
+            return false
+        }
+    }
 }
 
 extension WorkoutRecordDetailViewController: UITableViewDataSource, UITableViewDelegate {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(
+        _ tableView: UITableView,
+        numberOfRowsInSection section: Int
+    ) -> Int {
         viewModel.workoutRecord.count
     }
 
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    func tableView(
+        _ tableView: UITableView,
+        cellForRowAt indexPath: IndexPath
+    ) -> UITableViewCell {
         let cell: RecordDetailCell = tableView.dequeueReusableCell()
         let data = viewModel.workoutRecord[indexPath.row]
         cell.configure(with: data)
         return cell
+    }
+    
+    func tableView(
+        _ tableView: UITableView,
+        trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath
+    ) -> UISwipeActionsConfiguration? {
+        
+        let delete = UIContextualAction(style: .destructive, title: nil) { [weak self] _, _, done in
+            guard let self else { return }
+            Task { @MainActor in
+                let success = await self.deleteRow(at: indexPath, in: tableView)
+                done(success)
+            }
+        }
+        
+        delete.image = R.image.trashbin()
+        delete.backgroundColor = R.color.accentRedColor()
+        
+        let config = UISwipeActionsConfiguration(actions: [delete])
+        config.performsFirstActionWithFullSwipe = true
+        return config
     }
 }
 

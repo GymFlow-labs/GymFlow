@@ -4,12 +4,15 @@
 //
 //  Created by Artem Kriukov on 05.10.2025.
 //
-#warning("Добавить состояние загрузки(человечек подтягивается), вынести логику во VM")
+
 import SwiftUI
 
 struct ExercisesView: View {
     @State private var searchText = ""
     @State private var exerciseIsSelected = false
+    @State private var showToast = false
+    @State private var toastMessage = ""
+    @State private var toastType: ToastType = .error
     
     @Binding var selectedExercise: Exercise?
     @Environment(\.dismiss) var dismiss
@@ -22,35 +25,48 @@ struct ExercisesView: View {
     }
     
     var body: some View {
-        VStack {
-            List {
-                ForEach(searchResult, id: \.id) { exercise in
-                    ExerciseButtonView(
-                        exercise: exercise,
-                        selectedExercise: $selectedExercise,
-                        dismiss: dismiss
-                    )
-                }
-            }
-            .task {
-                await fetchExercises()
-            }
-            .alert("Ошибка", isPresented: .constant(viewModel.errorMessage != nil)) {
-                Button("Повторить") {
-                    viewModel.errorMessage = nil
-                    Task {
-                        await fetchExercises()
+        ZStack {
+            VStack {
+                List {
+                    ForEach(searchResult, id: \.id) { exercise in
+                        ExerciseButtonView(
+                            exercise: exercise,
+                            selectedExercise: $selectedExercise,
+                            dismiss: dismiss
+                        )
                     }
                 }
-            } message: {
-                Text(viewModel.errorMessage ?? "")
+                .listStyle(.plain)
+                .task {
+                    await fetchExercises()
+                }
+            }
+            .navigationTitle("Exercises")
+            .searchable(
+                text: $searchText,
+                placement: .navigationBarDrawer(displayMode: .always)
+            )
+            .overlay(alignment: .top) {
+                if showToast {
+                    ToastView(message: toastMessage, type: toastType) {
+                        withAnimation(.easeInOut) { showToast = false }
+                    }
+                    .transition(.move(edge: .top).combined(with: .opacity))
+                    .onAppear {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                            withAnimation(.easeInOut) { showToast = false }
+                        }
+                    }
+                }
+            }
+            .animation(.easeInOut, value: showToast)
+
+            if viewModel.isLoading {
+                Color.black.opacity(0.25)
+                    .ignoresSafeArea()
+                LoaderView()
             }
         }
-        .navigationTitle("Exercises")
-        .searchable(
-            text: $searchText,
-            placement: .navigationBarDrawer(displayMode: .always)
-        )
     }
     
     var searchResult: [Exercise] {
@@ -70,7 +86,9 @@ struct ExercisesView: View {
         do {
             try await viewModel.fetchExercises()
         } catch {
-            viewModel.errorMessage = "Не удалось загрузить упражнение"
+            toastMessage = "Произошла ошибка сети"
+            toastType = .error
+            withAnimation { showToast = true }
         }
     }
 }

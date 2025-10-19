@@ -9,11 +9,12 @@ import SwiftUI
 
 struct AddRecordView: View {
     @State private var showCalendar = false
-    @State private var showError = false
-    @State private var errorMessage = ""
     @State private var selectedExercise: Exercise?
-    @State private var weight = "1"
+    @State private var weight = "0"
     @State private var selectedDate: Date?
+    @State private var showToast = false
+    @State private var toastMessage = ""
+    @State private var toastType: ToastType = .success
     
     private let viewModel: AddRecordViewModelProtocol
     private let exercisesAssembly: ExercisesAssembly
@@ -56,18 +57,26 @@ struct AddRecordView: View {
                 SaveButton {
                     saveRecord()
                 }
-                .alert("Ошибка сохранения", isPresented: $showError) {
-                    Button("Ок", role: .cancel) { }
-                } message: {
-                    Text(errorMessage)
-                }
-                
                 .padding(.bottom)
             }
             .padding(.horizontal)
             .navigationTitle("Новый рекорд")
             .background(Color.backgroundColor)
         }
+        .overlay(alignment: .top) {
+            if showToast {
+                ToastView(message: toastMessage, type: toastType) {
+                    withAnimation(.easeInOut) { showToast = false }
+                }
+                .transition(.move(edge: .top).combined(with: .opacity))
+                .onAppear {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                        withAnimation(.easeInOut) { showToast = false }
+                    }
+                }
+            }
+        }
+        .animation(.easeInOut, value: showToast)
     }
     
     private func saveRecord() {
@@ -77,13 +86,18 @@ struct AddRecordView: View {
                let date = selectedDate {
                 do {
                     try await viewModel.addRecord(for: exercise, date: date, weight: doubleWeight)
+                    toastMessage = "Рекорд сохранён"
+                    toastType = .success
+                    withAnimation { showToast = true }
                 } catch {
-                    errorMessage = (error as NSError).localizedDescription
-                    showError = true
+                    toastMessage = (error as NSError).localizedDescription
+                    toastType = .error
+                    withAnimation { showToast = true }
                 }
             } else {
-                errorMessage = "Заполните все поля перед сохранением."
-                showError = true
+                toastMessage = "Заполните все поля перед сохранением."
+                toastType = .error
+                withAnimation { showToast = true }
             }
         }
     }
@@ -149,7 +163,7 @@ struct TextFieldView: View {
             TextField("Рекордный вес", text: $weight)
                 .font(.largeTitle)
                 .foregroundStyle(Color.primaryTextColor)
-                .keyboardType(.decimalPad)
+                .keyboardType(.numberPad)
             
             Text(unit)
                 .font(.title2)

@@ -10,7 +10,9 @@ import Foundation
 
 protocol WorkoutRecordRepositoryProtocol {
     func addRecord(for exercise: Exercise, date: Date, weight: Double) async throws
+#warning("async throws")
     func fetchRecords(forExerciseID id: String) -> [WorkoutRecord]
+    func deleteRecord(_ record: WorkoutRecord) async throws
 }
 
 final class WorkoutRecordsRepositories: WorkoutRecordRepositoryProtocol {
@@ -53,5 +55,23 @@ final class WorkoutRecordsRepositories: WorkoutRecordRepositoryProtocol {
         
         let entities = (try? context.fetch(req)) ?? []
         return entities.map { WorkoutRecordMapper.toDomain($0) }
+    }
+    
+    func deleteRecord(_ record: WorkoutRecord) async throws {
+        let request: NSFetchRequest<WorkoutRecords> = WorkoutRecords.fetchRequest()
+        request.fetchLimit = 1
+        request.predicate = NSPredicate(format: "id == %@", record.id.uuidString)
+        
+        if let entity = try self.context.fetch(request).first {
+            let exercice = entity.exercise
+            
+            self.context.delete(entity)
+            
+            if let exercice, (exercice.records?.count ?? 0) <= 1 {
+                context.delete(exercice)
+            }
+            
+            try context.save()
+        }
     }
 }

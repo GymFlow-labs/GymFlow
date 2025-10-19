@@ -130,15 +130,16 @@ private extension RecordDetailCell {
         let insetV: CGFloat = 12
 
         NSLayoutConstraint.activate([
-            cardView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
-            cardView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12),
-            cardView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12),
-            cardView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8),
+            cardView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            cardView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: insetV),
+            cardView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -insetV),
+            cardView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
 
             contentStack.topAnchor.constraint(equalTo: cardView.topAnchor, constant: insetV),
             contentStack.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: insetH),
             contentStack.trailingAnchor.constraint(equalTo: cardView.trailingAnchor, constant: -insetH),
-            contentStack.bottomAnchor.constraint(equalTo: cardView.bottomAnchor, constant: -insetV),
+            contentStack.bottomAnchor
+                .constraint(equalTo: cardView.bottomAnchor, constant: -insetV)
         ])
     }
 }
