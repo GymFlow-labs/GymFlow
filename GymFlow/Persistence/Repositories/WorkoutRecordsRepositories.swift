@@ -63,8 +63,15 @@ final class WorkoutRecordsRepositories: WorkoutRecordRepositoryProtocol {
         request.predicate = NSPredicate(format: "id == %@", record.id.uuidString)
         
         if let entity = try self.context.fetch(request).first {
+            let exercice = entity.exercise
+            
             self.context.delete(entity)
-            self.coreDataStack.saveContext()
+            
+            if let exercice, (exercice.records?.count ?? 0) <= 1 {
+                context.delete(exercice)
+            }
+            
+            try context.save()
         }
     }
 }
