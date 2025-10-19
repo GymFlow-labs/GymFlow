@@ -10,15 +10,15 @@ import UIKit
 final class AppCoordinator: Coordinator {
     private var servicesAssembly: ServicesAssembly
     private var childCoordinators: [Coordinator] = []
-    
-    var navigationController: UINavigationController
+    private let window: UIWindow
+    private var tabBarCoordinator: MainTabBarCoordinator?
     var completionHandler: CoordinatorHandler?
 
     init(
-        navigationController: UINavigationController,
+        window: UIWindow,
         servicesAssembly: ServicesAssembly
     ) {
-        self.navigationController = navigationController
+        self.window = window
         self.servicesAssembly = servicesAssembly
     }
     
@@ -28,13 +28,16 @@ final class AppCoordinator: Coordinator {
     
     private func showMainFlow() {
         childCoordinators.removeAll()
-        let mainFlowCoordinator = MainFlowCoordinator(
-            servicesAssembly: servicesAssembly,
-            navigationController: navigationController
-        )
-        childCoordinators.append(mainFlowCoordinator)
-        mainFlowCoordinator.completionHandler = { [weak self] in self?.showMainFlow() }
-        navigationController.setViewControllers([], animated: false)
-        mainFlowCoordinator.start()
+        tabBarCoordinator = CoordinatorFactory.makeTabBarCoordinator(servicesAssembly: servicesAssembly)
+        
+        guard let tabBarCoordinator else {
+            print("[AppCoordinator -> showMainFlow]: Ошибка инициализации MainTabBarCoordinator")
+            return
+        }
+        
+        window.rootViewController = tabBarCoordinator.rootViewController
+        window.makeKeyAndVisible()
+        childCoordinators.append(tabBarCoordinator)
+        tabBarCoordinator.start()
     }
 }

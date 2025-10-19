@@ -7,34 +7,28 @@
 
 import UIKit
 
-class SceneDelegate: UIResponder, UIWindowSceneDelegate {
+final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     var window: UIWindow?
     
-    let servicesAssembly = ServicesAssembly(
+    private var appCoordinator: Coordinator?
+    private let servicesAssembly = ServicesAssembly(
         networkClient: NetworkClient(),
         coreDataStack: CoreDataStack()
-    )
-    
-    private var appCoordinator: Coordinator?
+    )    
     
     func scene(
         _ scene: UIScene,
         willConnectTo session: UISceneSession,
-        options connectionOptions: UIScene.ConnectionOptions) {
-            
-            let nav = UINavigationController()
-            appCoordinator = CoordinatorFactory.makeAppCoordinator(
-                navController: nav,
+        options connectionOptions: UIScene.ConnectionOptions
+    ) {
+        guard let windowScene = (scene as? UIWindowScene) else { return }
+        let window = UIWindow(windowScene: windowScene)
+        appCoordinator = CoordinatorFactory.makeAppCoordinator(
+                window: window,
                 servicesAssembly: servicesAssembly
             )
-            
-            guard let windowScene = (scene as? UIWindowScene) else { return }
-            window = UIWindow(windowScene: windowScene)
-            
-            window?.rootViewController = nav
-            window?.frame = windowScene.coordinateSpace.bounds
-            window?.makeKeyAndVisible()
-            appCoordinator?.start()
-        }
+        self.window = window
+        appCoordinator?.start()
+    }
 }

@@ -10,17 +10,15 @@ import UIKit
 struct CoordinatorFactory {
     
     static func makeAppCoordinator(
-        navController: UINavigationController,
+        window: UIWindow,
         servicesAssembly: ServicesAssembly
     ) -> AppCoordinator {
-        AppCoordinator(navigationController: navController, servicesAssembly: servicesAssembly)
+        AppCoordinator(window: window, servicesAssembly: servicesAssembly)
     }
     
-    static func makeMainCoordinator(
-        servicesAssembly: ServicesAssembly,
-        navController: UINavigationController
-    ) -> MainFlowCoordinator {
-        MainFlowCoordinator(servicesAssembly: servicesAssembly, navigationController: navController)
+    static func makeTabBarCoordinator(
+        servicesAssembly: ServicesAssembly
+    ) -> MainTabBarCoordinator {
+        MainTabBarCoordinator(servicesAssembly: servicesAssembly)
     }
-    
 }
