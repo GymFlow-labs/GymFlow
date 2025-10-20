@@ -21,4 +21,25 @@ struct CoordinatorFactory {
     ) -> MainTabBarCoordinator {
         MainTabBarCoordinator(servicesAssembly: servicesAssembly)
     }
+    
+    static func makeHomeCoordinator(
+        navigationController: UINavigationController,
+        servicesAssembly: ServicesAssembly
+    ) -> HomeCoordinator {
+        HomeCoordinator(navigationController: navigationController, servicesAssembly: servicesAssembly)
+    }
+    
+    static func makeAddRecordCoordinator(
+        navigationController: UINavigationController,
+        servicesAssembly: ServicesAssembly
+    ) -> AddRecordCoordinator {
+        AddRecordCoordinator(navigationController: navigationController, servicesAssembly: servicesAssembly)
+    }
+    
+    static func makeRecordListCoordinator(
+        navigationController: UINavigationController,
+        servicesAssembly: ServicesAssembly
+    ) -> RecordsListCoordinator {
+        RecordsListCoordinator(navigationController: navigationController, servicesAssembly: servicesAssembly)
+    }
 }

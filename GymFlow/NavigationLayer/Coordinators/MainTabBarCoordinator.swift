@@ -28,50 +28,30 @@ final class MainTabBarCoordinator: Coordinator {
     }
     
 }
-#warning("создание контролеров через фабрику!")
+
 private extension MainTabBarCoordinator {
+    func makeTab(for tab: Tabs) -> UINavigationController {
+        let navigation = UINavigationController()
+        navigation.navigationBar.prefersLargeTitles = true
+        
+        let coordinator = tab.makeTabsCoordinator(
+            navigationController: navigation,
+            servicesAssembly: servicesAssembly
+        )
+        childCoordinators.append(coordinator)
+        coordinator.start()
+        
+        navigation.tabBarItem = UITabBarItem(
+            title: tab.title,
+            image: tab.image,
+            tag: tab.tag
+        )
+        
+        return navigation
+    }
+    
     func setUpTabBar() {
-        let homeNav = UINavigationController()
-        let homeCoordinator = HomeCoordinator(
-            navigationController: homeNav,
-            servicesAssembly: servicesAssembly
-        )
-        childCoordinators.append(homeCoordinator)
-        homeCoordinator.start()
-        homeNav.tabBarItem = UITabBarItem(
-            title: "Главная",
-            image: UIImage(systemName: "house"),
-            tag: 0
-        )
-        
-        let addNav = UINavigationController()
-        addNav.navigationItem.largeTitleDisplayMode = .always
-        addNav.navigationBar.prefersLargeTitles = true
-        let addCoordinator = AddRecordCoordinator(
-            navigationController: addNav,
-            servicesAssembly: servicesAssembly
-        )
-        childCoordinators.append(addCoordinator)
-        addCoordinator.start()
-        addNav.tabBarItem = UITabBarItem(
-            title: "Add",
-            image: UIImage(systemName: "calendar.circle"),
-            tag: 1
-        )
-        
-        let recordsNav = UINavigationController()
-        let recordsCoordinator = RecordsListCoordinator(
-            navigationController: recordsNav,
-            servicesAssembly: servicesAssembly
-        )
-        childCoordinators.append(recordsCoordinator)
-        recordsCoordinator.start()
-        recordsNav.tabBarItem = UITabBarItem(
-            title: "List",
-            image: UIImage(systemName: "person.circle.fill"),
-            tag: 2
-        )
-        
-        tabBarController.viewControllers = [homeNav, addNav, recordsNav]
+        let tabs: [Tabs] = [.home, .add, .records]
+        tabBarController.viewControllers = tabs.map { makeTab(for: $0) }
     }
 }
