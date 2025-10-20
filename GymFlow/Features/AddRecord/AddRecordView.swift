@@ -17,18 +17,21 @@ struct AddRecordView: View {
     @State private var toastType: ToastType = .success
     
     private let viewModel: AddRecordViewModelProtocol
-    private let exercisesAssembly: ExercisesAssembly
+    private let onSelectExercise: ( (Binding<Exercise?>) -> Void)?
     
-    init(viewModel: AddRecordViewModel, exercisesAssembly: ExercisesAssembly) {
+    init(
+        viewModel: AddRecordViewModelProtocol,
+        onSelectExercise: ((Binding<Exercise?>) -> Void)? = nil
+    ) {
         self.viewModel = viewModel
-        self.exercisesAssembly = exercisesAssembly
+        self.onSelectExercise = onSelectExercise
     }
     
     var body: some View {
         VStack(spacing: UIConstants.Spacing.large) {
-            NavigationLink(
-                destination: exercisesAssembly.build(selectedExercise: $selectedExercise)
-            ) {
+            Button {
+                onSelectExercise?( $selectedExercise )
+            } label: {
                 RowButtonView(
                     text: selectedExercise?.nameRu ?? "Выберите упражнение",
                     textIcon: .barbell

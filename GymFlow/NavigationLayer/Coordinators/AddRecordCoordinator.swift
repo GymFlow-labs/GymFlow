@@ -21,8 +21,21 @@ final class AddRecordCoordinator: Coordinator {
 
     func start() {
         let addRecordAssembly = AddRecordAssembly(servicesAssembly: servicesAssembly)
-        let rootView = addRecordAssembly.build()
+        let rootView = addRecordAssembly.build { [weak self] selectedExercise in
+            Task { @MainActor [weak self] in
+                self?.showExercises(selectedExercise)
+            }
+        }
+        
         let hosting = UIHostingController(rootView: rootView)
         navigationController.setViewControllers([hosting], animated: false)
+    }
+    
+    @MainActor
+    private func showExercises(_ selectedExercise: Binding<Exercise?>) {
+        let exercisesAssembly = ExercisesAssembly(serviceAssembly: servicesAssembly)
+        let exercisesView = exercisesAssembly.build(selectedExercise: selectedExercise)
+        let hosting = UIHostingController(rootView: exercisesView)
+        navigationController.pushViewController(hosting, animated: true)
     }
 }
