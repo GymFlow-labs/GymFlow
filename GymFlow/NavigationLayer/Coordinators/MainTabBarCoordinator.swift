@@ -28,7 +28,7 @@ final class MainTabBarCoordinator: Coordinator {
     }
     
 }
-
+#warning("создание контролеров через фабрику!")
 private extension MainTabBarCoordinator {
     func setUpTabBar() {
         let homeNav = UINavigationController()
@@ -44,8 +44,9 @@ private extension MainTabBarCoordinator {
             tag: 0
         )
         
-        // 2) Add Record (SwiftUI внутри UIKit)
         let addNav = UINavigationController()
+        addNav.navigationItem.largeTitleDisplayMode = .always
+        addNav.navigationBar.prefersLargeTitles = true
         let addCoordinator = AddRecordCoordinator(
             navigationController: addNav,
             servicesAssembly: servicesAssembly
@@ -58,7 +59,6 @@ private extension MainTabBarCoordinator {
             tag: 1
         )
         
-        // 3) Records List
         let recordsNav = UINavigationController()
         let recordsCoordinator = RecordsListCoordinator(
             navigationController: recordsNav,
@@ -73,66 +73,5 @@ private extension MainTabBarCoordinator {
         )
         
         tabBarController.viewControllers = [homeNav, addNav, recordsNav]
-    }
-}
-
-final class HomeCoordinator: Coordinator {
-    var navigationController: UINavigationController
-
-    var completionHandler: CoordinatorHandler?
-
-    let servicesAssembly: ServicesAssembly
-    var childCoordinators: [Coordinator] = []
-
-    init(navigationController: UINavigationController, servicesAssembly: ServicesAssembly) {
-        self.navigationController = navigationController
-        self.servicesAssembly = servicesAssembly
-    }
-
-    func start() {
-        let vc = HomeViewController()
-        navigationController.setViewControllers([vc], animated: false)
-    }
-}
-
-final class AddRecordCoordinator: Coordinator {
-    var navigationController: UINavigationController
-
-
-    var completionHandler: CoordinatorHandler?
-
-    let servicesAssembly: ServicesAssembly
-    var childCoordinators: [Coordinator] = []
-
-    init(navigationController: UINavigationController, servicesAssembly: ServicesAssembly) {
-        self.navigationController = navigationController
-        self.servicesAssembly = servicesAssembly
-    }
-
-    func start() {
-        let addRecordAssembly = AddRecordAssembly(servicesAssembly: servicesAssembly)
-        let rootView = addRecordAssembly.build()
-        let hosting = UIHostingController(rootView: rootView)
-        navigationController.setViewControllers([hosting], animated: false)
-    }
-}
-
-final class RecordsListCoordinator: Coordinator {
-    var navigationController: UINavigationController
-
-    var completionHandler: CoordinatorHandler?
-
-    let servicesAssembly: ServicesAssembly
-    var childCoordinators: [Coordinator] = []
-
-    init(navigationController: UINavigationController, servicesAssembly: ServicesAssembly) {
-        self.navigationController = navigationController
-        self.servicesAssembly = servicesAssembly
-    }
-
-    func start() {
-        let recordsListAssembly = RecordsListAssembly(serviceAssembly: servicesAssembly)
-        let vc = recordsListAssembly.build()
-        navigationController.setViewControllers([vc], animated: false)
     }
 }
