@@ -17,52 +17,54 @@ struct AddRecordView: View {
     @State private var toastType: ToastType = .success
     
     private let viewModel: AddRecordViewModelProtocol
-    private let exercisesAssembly: ExercisesAssembly
+    private let onSelectExercise: ( (Binding<Exercise?>) -> Void)?
     
-    init(viewModel: AddRecordViewModel, exercisesAssembly: ExercisesAssembly) {
+    init(
+        viewModel: AddRecordViewModelProtocol,
+        onSelectExercise: ((Binding<Exercise?>) -> Void)? = nil
+    ) {
         self.viewModel = viewModel
-        self.exercisesAssembly = exercisesAssembly
+        self.onSelectExercise = onSelectExercise
     }
     
     var body: some View {
-        NavigationStack {
-            VStack(spacing: UIConstants.Spacing.large) {
-                NavigationLink(
-                    destination: exercisesAssembly.build(selectedExercise: $selectedExercise)
-                ) {
-                    RowButtonView(
-                        text: selectedExercise?.nameRu ?? "Выберите упражнение",
-                        textIcon: .barbell
-                    )
-                }
-                .padding(.top)
-                
-                TextFieldView(weight: $weight)
-                
+        VStack(spacing: UIConstants.Spacing.large) {
+            Button {
+                onSelectExercise?( $selectedExercise )
+            } label: {
                 RowButtonView(
-                    text: selectedDate.map {
-                        $0.formatted(date: .long, time: .omitted)
-                    } ?? "Выберите дату",
-                    textIcon: .calendar
-                ) {
-                    showCalendar = true
-                }
-                .sheet(isPresented: $showCalendar) {
-                    CalendarSheet(selectedDate: $selectedDate)
-                        .presentationDetents([.medium])
-                }
-                
-                Spacer()
-                
-                SaveButton {
-                    saveRecord()
-                }
-                .padding(.bottom)
+                    text: selectedExercise?.nameRu ?? "Выберите упражнение",
+                    textIcon: .barbell
+                )
             }
-            .padding(.horizontal)
-            .navigationTitle("Новый рекорд")
-            .background(Color.backgroundColor)
+            .padding(.top)
+            
+            TextFieldView(weight: $weight)
+            
+            RowButtonView(
+                text: selectedDate.map {
+                    $0.formatted(date: .long, time: .omitted)
+                } ?? "Выберите дату",
+                textIcon: .calendar
+            ) {
+                showCalendar = true
+            }
+            .sheet(isPresented: $showCalendar) {
+                CalendarSheet(selectedDate: $selectedDate)
+                    .presentationDetents([.medium])
+            }
+            
+            Spacer()
+            
+            SaveButton {
+                saveRecord()
+            }
+            .padding(.bottom)
         }
+        .padding(.horizontal)
+        .navigationTitle("Новый рекорд")
+        .navigationBarTitleDisplayMode(.large)
+        .background(Color.backgroundColor)
         .overlay(alignment: .top) {
             if showToast {
                 ToastView(message: toastMessage, type: toastType) {
@@ -77,6 +79,7 @@ struct AddRecordView: View {
             }
         }
         .animation(.easeInOut, value: showToast)
+        
     }
     
     private func saveRecord() {

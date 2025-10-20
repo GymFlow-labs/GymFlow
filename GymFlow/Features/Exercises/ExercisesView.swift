@@ -41,7 +41,7 @@ struct ExercisesView: View {
                     await fetchExercises()
                 }
             }
-            .navigationTitle("Exercises")
+            .navigationTitle("Упражение")
             .searchable(
                 text: $searchText,
                 placement: .navigationBarDrawer(displayMode: .always)

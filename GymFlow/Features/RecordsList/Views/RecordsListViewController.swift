@@ -8,9 +8,11 @@
 import UIKit
 
 final class RecordsListViewController: UIViewController {
-    // MARK: - Data
+    // MARK: - Properties
     private let viewModel: RecordListViewModelProtocol
     private let servicesAssembly: ServicesAssembly
+    
+    var onSelectRecord: ((Exercise) -> Void)?
     // MARK: - UI
     private lazy var recordsTableView: UITableView = {
         let element = UITableView()
@@ -97,10 +99,6 @@ extension RecordsListViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let exercise = viewModel.exercises[indexPath.row]
-        let workoutAssembly = WorkoutRecordDetailAssembly(serviceAssembly: servicesAssembly)
-        let workoutVC = workoutAssembly.build(with: exercise)
-        let nav = UINavigationController(rootViewController: workoutVC)
-        nav.modalPresentationStyle = .formSheet
-        present(nav, animated: true)
+        onSelectRecord?(exercise) 
     }
 }

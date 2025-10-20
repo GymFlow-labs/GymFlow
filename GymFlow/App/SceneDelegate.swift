@@ -7,24 +7,28 @@
 
 import UIKit
 
-class SceneDelegate: UIResponder, UIWindowSceneDelegate {
-
+final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
+    
     var window: UIWindow?
-
-    let servicesAssembly = ServicesAssembly(
+    
+    private var appCoordinator: Coordinator?
+    private let servicesAssembly = ServicesAssembly(
         networkClient: NetworkClient(),
         coreDataStack: CoreDataStack()
-    )
+    )    
     
     func scene(
         _ scene: UIScene,
         willConnectTo session: UISceneSession,
-        options connectionOptions: UIScene.ConnectionOptions) {
-
+        options connectionOptions: UIScene.ConnectionOptions
+    ) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
-        window = UIWindow(windowScene: windowScene)
-        window?.rootViewController = MainTabBarController(servicesAssembly: servicesAssembly)
-        window?.frame = windowScene.coordinateSpace.bounds
-        window?.makeKeyAndVisible()
+        let window = UIWindow(windowScene: windowScene)
+        appCoordinator = CoordinatorFactory.makeAppCoordinator(
+                window: window,
+                servicesAssembly: servicesAssembly
+            )
+        self.window = window
+        appCoordinator?.start()
     }
 }

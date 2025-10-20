@@ -5,25 +5,26 @@
 //  Created by Artem Kriukov on 12.10.2025.
 //
 
-import Foundation
+import SwiftUI
 
 final class AddRecordAssembly {
     private let servicesAssembly: ServicesAssembly
-    private let exercisesAssembly: ExercisesAssembly
     
     init(servicesAssembly: ServicesAssembly) {
         self.servicesAssembly = servicesAssembly
-        self.exercisesAssembly = ExercisesAssembly(serviceAssembly: servicesAssembly)
     }
     
-    func build() -> AddRecordView {
+    func build(onSelectExercise: ((Binding<Exercise?>) -> Void)? = nil) -> AddRecordView {
         let workoutService = servicesAssembly.workoutRecordServiceImpl
         
         let viewModel = AddRecordViewModel(
             workoutRecordRepository: workoutService
         )
         
-        let view = AddRecordView(viewModel: viewModel, exercisesAssembly: exercisesAssembly)
+        let view = AddRecordView(
+            viewModel: viewModel,
+            onSelectExercise: onSelectExercise
+        )
         return view
     }
 }
