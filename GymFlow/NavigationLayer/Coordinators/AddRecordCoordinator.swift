@@ -20,8 +20,8 @@ final class AddRecordCoordinator: Coordinator {
     }
 
     func start() {
-        let addRecordAssembly = AddRecordAssembly(servicesAssembly: servicesAssembly)
-        let rootView = addRecordAssembly.build { [weak self] selectedExercise in
+        let addRecordAssembly = AddResultAssembly(servicesAssembly: servicesAssembly)
+        let rootView = addRecordAssembly.build(typeView: .test) { [weak self] selectedExercise in
             Task { @MainActor [weak self] in
                 self?.showExercises(selectedExercise)
             }

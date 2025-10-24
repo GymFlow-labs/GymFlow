@@ -93,14 +93,6 @@ struct ExercisesView: View {
     }
 }
 
-struct SearchView: View {
-    @Binding var searchText: String
-    
-    var body: some View {
-        Text(searchText)
-    }
-}
-
 struct ExerciseButtonView: View {
     let exercise: Exercise
     @Binding var selectedExercise: Exercise?
