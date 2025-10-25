@@ -30,7 +30,7 @@ final class AddRecordCoordinator: Coordinator {
         vc.onAddRecord = { @MainActor [weak self] in
             self?.showExerciseForRecord()
         }
-        navigationController.setViewControllers([vc], animated: false)
+        navigationController.setViewControllers([vc], animated: true)
     }
     
     private func showAddRecord() {
@@ -49,7 +49,7 @@ final class AddRecordCoordinator: Coordinator {
         }
         
         let hosting = UIHostingController(rootView: rootView)
-        navigationController.setViewControllers([hosting], animated: false)
+        navigationController.setViewControllers([hosting], animated: true)
     }
     
     @MainActor
