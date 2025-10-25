@@ -61,7 +61,7 @@ final class AddRecordCoordinator: Coordinator {
         }
         
         let hosting = UIHostingController(rootView: rootView)
-        navigationController.setViewControllers([hosting], animated: true)
+        navigationController.pushViewController(hosting, animated: true)
     }
     
     private func showCrossfitTests() {
@@ -69,7 +69,7 @@ final class AddRecordCoordinator: Coordinator {
         vc.onTestSelected = { [weak self] test in
             self?.showAddRecord(type: .test, selectedTest: test)
         }
-        navigationController.setViewControllers([vc], animated: true)
+        navigationController.pushViewController(vc, animated: true)
     }
     
     @MainActor
