@@ -16,18 +16,16 @@ final class AddResultAssembly {
     
     func build(
         typeView: AddResultViewType,
-        onSelectExercise: ((Binding<Exercise?>) -> Void)? = nil
+        selectedExercise: Exercise? = nil
     ) -> AddResultView {
         let workoutService = servicesAssembly.workoutRecordServiceImpl
         
-        let viewModel = AddResultViewModel(
-            workoutRecordRepository: workoutService
-        )
+        let viewModel = AddResultViewModel(workoutRecordRepository: workoutService)
         
         let view = AddResultView(
             viewModel: viewModel,
             type: typeView,
-            onSelectExercise: onSelectExercise
+            selectedExercise: selectedExercise
         )
         return view
     }

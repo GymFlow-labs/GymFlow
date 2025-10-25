@@ -21,7 +21,7 @@ final class HomeCoordinator: Coordinator {
     }
 
     func start() {
-        let vc = HomeViewController()
+        let vc = AddSelectionViewController()
         navigationController.setViewControllers([vc], animated: false)
     }
 }

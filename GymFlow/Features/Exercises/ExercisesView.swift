@@ -9,19 +9,18 @@ import SwiftUI
 
 struct ExercisesView: View {
     @State private var searchText = ""
-    @State private var exerciseIsSelected = false
     @State private var showToast = false
     @State private var toastMessage = ""
     @State private var toastType: ToastType = .error
     
-    @Binding var selectedExercise: Exercise?
     @Environment(\.dismiss) var dismiss
-    
     @StateObject private var viewModel: ExercisesViewModel
     
-    init(viewModel: ExercisesViewModel, selectedExercise: Binding<Exercise?>) {
+    var onSelectedExercise: ((Exercise) -> Void)?
+    
+    init(viewModel: ExercisesViewModel, onSelectedExercise: ((Exercise) -> Void)? = nil) {
         _viewModel = StateObject(wrappedValue: viewModel)
-        _selectedExercise = selectedExercise
+        self.onSelectedExercise = onSelectedExercise
     }
     
     var body: some View {
@@ -31,8 +30,8 @@ struct ExercisesView: View {
                     ForEach(searchResult, id: \.id) { exercise in
                         ExerciseButtonView(
                             exercise: exercise,
-                            selectedExercise: $selectedExercise,
-                            dismiss: dismiss
+                            dismiss: dismiss,
+                            onSelectedExercise: onSelectedExercise 
                         )
                     }
                 }
@@ -95,13 +94,13 @@ struct ExercisesView: View {
 
 struct ExerciseButtonView: View {
     let exercise: Exercise
-    @Binding var selectedExercise: Exercise?
     let dismiss: DismissAction
+    var onSelectedExercise: ((Exercise) -> Void)?
     
     var body: some View {
         Button(
             action: {
-                selectedExercise = exercise
+                onSelectedExercise?(exercise)
                 dismiss()
             },
             label: {
@@ -109,11 +108,11 @@ struct ExerciseButtonView: View {
                     Text(exercise.nameRu)
                         .foregroundColor(Color.primaryTextColor)
                     Spacer()
-                    
-                    if selectedExercise?.id == exercise.id {
-                        Image(systemName: "checkmark")
-                            .foregroundColor(.accentColor)
-                    }
+//                    
+//                    if selectedExercise?.id == exercise.id {
+//                        Image(systemName: "checkmark")
+//                            .foregroundColor(.accentColor)
+//                    }
                 }
                 .contentShape(Rectangle())
             }

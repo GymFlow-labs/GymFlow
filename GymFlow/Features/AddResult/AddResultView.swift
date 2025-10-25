@@ -21,7 +21,7 @@ struct AddResultView: View {
     @State private var selectedDate: Date? = Date()
     
     // Для теста
-    @State private var didPassTest = true   // true = Полностью (успел в кап), false = Частично
+    @State private var didPassTest = true 
     @State var minutes = ""
     @State var seconds = ""
     @State private var reps = ""
@@ -31,24 +31,32 @@ struct AddResultView: View {
     @State private var toastMessage = ""
     @State private var toastType: ToastType = .success
     
-    private let viewModel: AddResultViewModelProtocol
-    private let onSelectExercise: ((Binding<Exercise?>) -> Void)?
+    @Environment(\.dismiss) var dismiss
     
+    private let viewModel: AddResultViewModelProtocol
+    
+    var onSelectExercise: (@MainActor () -> Void)?
+    var onSave: (@MainActor () -> Void)?
     init(
         viewModel: AddResultViewModelProtocol,
         type: AddResultViewType,
-        onSelectExercise: ((Binding<Exercise?>) -> Void)? = nil
+        selectedExercise: Exercise? = nil
     ) {
         self.viewModel = viewModel
         self.type = type
-        self.onSelectExercise = onSelectExercise
+        self._selectedExercise = State(initialValue: selectedExercise)
     }
     
     var body: some View {
         ScrollView {
             VStack {
                 SectionHeader(text: "Упражнение")
-                SelectedExerciseView()
+                SelectedExerciseView(
+                    selectedExercise: selectedExercise,
+                    onTap: {
+                        onSelectExercise?()
+                    }
+                )
                 
                 switch type {
                 case .oneRepMax:
@@ -114,6 +122,9 @@ struct AddResultView: View {
                 do {
                     try await viewModel.addRecord(for: exercise, date: date, weight: weight)
                     showSuccess("Рекорд сохранён")
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                        onSave?()
+                    }
                 } catch { showError(error.localizedDescription) }
                 
             case .test:
@@ -361,28 +372,42 @@ struct SaveButton: View {
                 )
             ),
             type: .test,
-            onSelectExercise: nil
+            selectedExercise: nil
         )
     }
 }
 
 struct SelectedExerciseView: View {
+    let selectedExercise: Exercise?
+    let onTap: () -> Void
+    
     var body: some View {
-        HStack(spacing: 12) {
-            Image.barbell
-                .resizable()
-                .scaledToFit()
-                .frame(width: 24, height: 24)
-                .foregroundStyle(Color.accentColor)
-            
-            Text("Упражнение")
-            // Text(selectedExercise?.nameRu ?? "Упражнение")
-                .foregroundStyle(Color.primaryTextColor)
-            Spacer()
+        Button(action: onTap) {
+            HStack(spacing: 12) {
+                Image.barbell
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 24, height: 24)
+                    .foregroundStyle(Color.accentColor)
+                
+                Text(selectedExercise?.nameRu ?? "Выберите упражнение")
+                    .foregroundStyle(
+                        selectedExercise == nil
+                            ? Color.secondaryTextColor
+                            : Color.primaryTextColor
+                    )
+                
+                Spacer()
+                
+                Image(systemName: "chevron.right")
+                    .foregroundStyle(Color.secondaryTextColor)
+                    .font(.system(size: 14, weight: .semibold))
+            }
+            .padding()
+            .background(Color.cellBackgroundColor)
+            .clipShape(RoundedRectangle(cornerRadius: UIConstants.CornerRadius.large))
         }
-        .padding()
-        .background(Color.cellBackgroundColor)
-        .clipShape(RoundedRectangle(cornerRadius: UIConstants.CornerRadius.large))
+        .buttonStyle(.plain)  
         .padding(.bottom)
     }
 }

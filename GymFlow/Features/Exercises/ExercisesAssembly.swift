@@ -15,9 +15,9 @@ struct ExercisesAssembly {
     }
 
     @MainActor
-    func build(selectedExercise: Binding<Exercise?>) -> ExercisesView {
+    func build(onSelectedExercise: ((Exercise) -> Void)? = nil) -> ExercisesView {
         let client = serviceAssembly.exercisesNetworkClientImpl
         let viewModel = ExercisesViewModel(exercisesNetworkClient: client)
-        return ExercisesView(viewModel: viewModel, selectedExercise: selectedExercise)
+        return ExercisesView(viewModel: viewModel)
     }
 }

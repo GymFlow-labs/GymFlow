@@ -8,7 +8,10 @@
 import SwiftUI
 import UIKit
 
-final class HomeViewController: UIViewController {    
+final class AddSelectionViewController: UIViewController {
+    var onAddRecord: ( @MainActor () -> Void)?
+    
+    // MARK: - UI
     private lazy var stackView: UIStackView = {
         let element = UIStackView()
         element.axis = .vertical
@@ -18,14 +21,16 @@ final class HomeViewController: UIViewController {
         return element
     }()
     
+    // MARK: - Lige Circle
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
         setupConstraints()
     }
 
+    // MARK: - Private Methods
     private func recordsButtonTapped() {
-
+        onAddRecord?()
     }
     
     private func testsButtonTapped() {
@@ -37,7 +42,7 @@ final class HomeViewController: UIViewController {
     }
 }
 
-private extension HomeViewController {
+private extension AddSelectionViewController {
     func setupViews() {
         view.backgroundColor = R.color.backgroundColor()
         
@@ -63,7 +68,7 @@ private extension HomeViewController {
     }
 }
 
-private extension HomeViewController {
+private extension AddSelectionViewController {
     func makeButton(title: String, icon: Image, action: @escaping () -> Void) -> UIView {
         let swiftUIButton = RowButtonView(text: title, textIcon: icon)
             .onTapGesture { action() }
