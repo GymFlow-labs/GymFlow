@@ -92,10 +92,6 @@ final class CrossfitTestsViewController: UIViewController {
     func showInfo(for test: CrossfitTest) {
         print("ℹ️ Info tapped for: \(test.name)")
     }
-    
-    func addTest(_ test: CrossfitTest) {
-        print("➕ Add tapped for: \(test.name)")
-    }
 
 }
 
@@ -139,7 +135,7 @@ extension CrossfitTestsViewController: UICollectionViewDataSource {
             self?.showInfo(for: test)
         }
         cell.onAddTap = { [weak self] in
-            self?.addTest(test)
+            self?.onTestSelected?(test)
         }
         
         return cell

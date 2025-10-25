@@ -8,8 +8,6 @@
 import SwiftUI
 
 final class AddRecordCoordinator: Coordinator {
-    private var selectedExercise: Exercise?
-
     var navigationController: UINavigationController
     var completionHandler: CoordinatorHandler?
 
@@ -30,18 +28,32 @@ final class AddRecordCoordinator: Coordinator {
         vc.onAddRecord = { @MainActor [weak self] in
             self?.showExerciseForRecord()
         }
+        
+        vc.onAddTest = { @MainActor [weak self] in
+            self?.showCrossfitTests()
+        }
+        
         navigationController.setViewControllers([vc], animated: true)
     }
     
-    private func showAddRecord() {
+    private func showAddRecord(
+        type: AddResultViewType,
+        selectedExercise: Exercise? = nil,
+        selectedTest: CrossfitTest? = nil
+    ) {
         let addRecordAssembly = AddResultAssembly(servicesAssembly: servicesAssembly)
         var rootView = addRecordAssembly.build(
-            typeView: .oneRepMax,
-            selectedExercise: selectedExercise
+            typeView: type,
+            selectedExercise: selectedExercise,
+            selectedTest: selectedTest
         )
         
         rootView.onSelectExercise = { @MainActor [weak self] in
             self?.showExerciseForRecord()
+        }
+        
+        rootView.onSelectTest = { @MainActor [weak self] in
+            self?.showCrossfitTests()
         }
         
         rootView.onSave = { @MainActor [weak self] in
@@ -52,16 +64,26 @@ final class AddRecordCoordinator: Coordinator {
         navigationController.setViewControllers([hosting], animated: true)
     }
     
+    private func showCrossfitTests() {
+        let vc = CrossfitTestsViewController()
+        vc.onTestSelected = { [weak self] test in
+            self?.showAddRecord(type: .test, selectedTest: test)
+        }
+        navigationController.setViewControllers([vc], animated: true)
+    }
+    
     @MainActor
     private func showExerciseForRecord() {
         let exercisesAssembly = ExercisesAssembly(serviceAssembly: servicesAssembly)
         var exercisesView = exercisesAssembly.build { [weak self] exercise in
-            self?.showAddRecord()
+            self?.showAddRecord(
+                type: .oneRepMax,
+                selectedExercise: exercise
+            )
         }
         
         exercisesView.onSelectedExercise = { [weak self] exercise in
-            self?.selectedExercise = exercise
-            self?.showAddRecord()
+            self?.showAddRecord(type: .oneRepMax, selectedExercise: exercise)
         }
         
         let hosting = UIHostingController(rootView: exercisesView)

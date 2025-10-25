@@ -14,9 +14,10 @@ enum AddResultViewType {
 
 struct AddResultView: View {
     let type: AddResultViewType
+    private var selectedExercise: Exercise?
+    private var selectedTest: CrossfitTest?
     
     @State private var showCalendar = false
-    @State private var selectedExercise: Exercise?
     @State private var weight = "0"
     @State private var selectedDate: Date? = Date()
     
@@ -36,39 +37,55 @@ struct AddResultView: View {
     private let viewModel: AddResultViewModelProtocol
     
     var onSelectExercise: (@MainActor () -> Void)?
+    var onSelectTest: (@MainActor () -> Void)?
     var onSave: (@MainActor () -> Void)?
+    
     init(
         viewModel: AddResultViewModelProtocol,
         type: AddResultViewType,
-        selectedExercise: Exercise? = nil
+        selectedExercise: Exercise? = nil,
+        selectedTest: CrossfitTest? = nil
     ) {
         self.viewModel = viewModel
         self.type = type
-        self._selectedExercise = State(initialValue: selectedExercise)
+        self.selectedExercise = selectedExercise
+        self.selectedTest = selectedTest
+        print("✅ AddResultView init called with test:", selectedTest?.name ?? "nil")
     }
     
     var body: some View {
         ScrollView {
             VStack {
-                SectionHeader(text: "Упражнение")
-                SelectedExerciseView(
-                    selectedExercise: selectedExercise,
-                    onTap: {
-                        onSelectExercise?()
-                    }
-                )
                 
                 switch type {
                 case .oneRepMax:
+                    SectionHeader(text: "Упражнение")
+                    SelectedExerciseView(
+                        selectedExercise: selectedExercise,
+                        selectedTest: nil,
+                        type: .oneRepMax,
+                        onTap: {
+                            onSelectExercise?()
+                        }
+                    )
                     OneRepMaxView(weight: $weight)
                 case .test:
-                    TestView(
-                        didPassTest: $didPassTest,
-                        minutes: $minutes,
-                        seconds: $seconds,
-                        reps: $reps,
-                        weight: $weight
-                    )
+                    SectionHeader(text: "Тест")
+                      SelectedExerciseView(
+                          selectedExercise: nil,
+                          selectedTest: selectedTest,
+                          type: .test,
+                          onTap: {
+                              onSelectTest?()  
+                          }
+                      )
+                      TestView(
+                          didPassTest: $didPassTest,
+                          minutes: $minutes,
+                          seconds: $seconds,
+                          reps: $reps,
+                          weight: $weight
+                      )
                 }
                 
                 SectionHeader(text: "Дата")
@@ -379,7 +396,18 @@ struct SaveButton: View {
 
 struct SelectedExerciseView: View {
     let selectedExercise: Exercise?
+    let selectedTest: CrossfitTest?
+    let type: AddResultViewType
     let onTap: () -> Void
+    
+    private var displayText: String {
+        switch type {
+        case .oneRepMax:
+            return selectedExercise?.nameRu ?? "Выберите упражнение"
+        case .test:
+            return selectedTest?.name ?? "Выберите тест"
+        }
+    }
     
     var body: some View {
         Button(action: onTap) {
@@ -390,12 +418,8 @@ struct SelectedExerciseView: View {
                     .frame(width: 24, height: 24)
                     .foregroundStyle(Color.accentColor)
                 
-                Text(selectedExercise?.nameRu ?? "Выберите упражнение")
-                    .foregroundStyle(
-                        selectedExercise == nil
-                            ? Color.secondaryTextColor
-                            : Color.primaryTextColor
-                    )
+                Text(displayText)
+                    .foregroundStyle(Color.primaryTextColor)
                 
                 Spacer()
                 
@@ -407,7 +431,7 @@ struct SelectedExerciseView: View {
             .background(Color.cellBackgroundColor)
             .clipShape(RoundedRectangle(cornerRadius: UIConstants.CornerRadius.large))
         }
-        .buttonStyle(.plain)  
+        .buttonStyle(.plain)
         .padding(.bottom)
     }
 }

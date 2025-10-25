@@ -10,7 +10,7 @@ import UIKit
 
 final class AddSelectionViewController: UIViewController {
     var onAddRecord: ( @MainActor () -> Void)?
-    
+    var onAddTest: ( @MainActor () -> Void)?
     // MARK: - UI
     private lazy var stackView: UIStackView = {
         let element = UIStackView()
@@ -34,7 +34,7 @@ final class AddSelectionViewController: UIViewController {
     }
     
     private func testsButtonTapped() {
-        print("⏸️ testsButtonTapped")
+        onAddTest?()
     }
     
     private func trainingButtonTapped() {
