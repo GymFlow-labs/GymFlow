@@ -21,7 +21,7 @@ final class HomeCoordinator: Coordinator {
     }
 
     func start() {
-        let vc = AddSelectionViewController()
+        let vc = CrossfitTestsViewController()
         navigationController.setViewControllers([vc], animated: false)
     }
 }
