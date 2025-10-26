@@ -144,8 +144,7 @@ final class CrossfitTestCell: UICollectionViewCell, ReuseIdentifying {
         descriptionLabel.text = test.description
         descriptionLabel.isHidden = test.description.isEmpty
         
-        let heartImage = test.isFavorite ? "heart.fill" : "heart"
-        favoriteButton.setImage(UIImage(systemName: heartImage), for: .normal)
+        favoriteButton.tintColor = test.isFavorite ? .systemRed : R.color.secondaryTextColor()
     }
     
     // MARK: - Actions
@@ -159,6 +158,10 @@ final class CrossfitTestCell: UICollectionViewCell, ReuseIdentifying {
     
     private func addTapped() {
         onAddTap?()
+    }
+    
+    func updateFavorite(_ isFavorite: Bool) {
+        favoriteButton.tintColor = isFavorite ? .systemRed : R.color.secondaryTextColor()
     }
 }
 
@@ -192,8 +195,8 @@ private extension CrossfitTestCell {
             mainStackView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -16),
             mainStackView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -16),
             
-            favoriteButton.widthAnchor.constraint(equalToConstant: 24),
-            favoriteButton.heightAnchor.constraint(equalToConstant: 24),
+            favoriteButton.widthAnchor.constraint(equalToConstant: 34),
+            favoriteButton.heightAnchor.constraint(equalToConstant: 34),
             
             bottomStackView.heightAnchor.constraint(equalToConstant: 44)
         ])
