@@ -32,7 +32,6 @@ final class MainTabBarCoordinator: Coordinator {
 private extension MainTabBarCoordinator {
     func makeTab(for tab: Tabs) -> UINavigationController {
         let navigation = UINavigationController()
-        navigation.navigationBar.prefersLargeTitles = true
         
         let coordinator = tab.makeTabsCoordinator(
             navigationController: navigation,
