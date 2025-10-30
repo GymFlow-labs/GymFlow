@@ -11,9 +11,15 @@ final class ResultsListViewController: UIViewController {
     // MARK: - Properties
     private let viewModel: ResultsListViewModelProtocol
     private let servicesAssembly: ServicesAssembly
+    private let typeScreen: ResultScreenType = .oneRM
     
     var onSelectRecord: ((Exercise) -> Void)?
     // MARK: - UI
+    
+    private lazy var segmentedControl = SegmentedControl(
+        titles: ResultScreenType.allCases.map { $0.title }
+    )
+    
     private lazy var recordsTableView: UITableView = {
         let element = UITableView()
         element.dataSource = self
@@ -53,10 +59,17 @@ final class ResultsListViewController: UIViewController {
     private func setupViews() {
         title = "Рекорды"
         view.backgroundColor = R.color.backgroundColor()
+        segmentedControl.translatesAutoresizingMaskIntoConstraints = false
+        
+        view.addSubview(segmentedControl)
         view.addSubview(recordsTableView)
         
         NSLayoutConstraint.activate([
-            recordsTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            segmentedControl.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
+            segmentedControl.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            segmentedControl.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            
+            recordsTableView.topAnchor.constraint(equalTo: segmentedControl.bottomAnchor, constant: 10),
             recordsTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             recordsTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             recordsTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
