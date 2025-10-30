@@ -16,9 +16,14 @@ final class ResultsListViewController: UIViewController {
     var onSelectRecord: ((Exercise) -> Void)?
     // MARK: - UI
     
-    private lazy var segmentedControl = SegmentedControl(
-        titles: ResultScreenType.allCases.map { $0.title }
-    )
+    private lazy var segmentedControl: SegmentedControl = {
+       let element = SegmentedControl(titles: ResultScreenType.allCases.map { $0.title })
+        element.addAction(UIAction { [weak self] _ in
+            guard let self else { return }
+            self.changeSegment(self.segmentedControl)
+        }, for: .valueChanged)
+        return element
+    }()
     
     private lazy var recordsTableView: UITableView = {
         let element = UITableView()
@@ -37,6 +42,7 @@ final class ResultsListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
+        switchMode(type: typeScreen)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -56,10 +62,23 @@ final class ResultsListViewController: UIViewController {
     }
     
     // MARK: - Private Methods
+    private func changeSegment(_ sender: UISegmentedControl) {
+        let selectedMode: ResultScreenType = sender.selectedSegmentIndex == 0 ? .oneRM : .test
+        switchMode(type: selectedMode)
+    }
+    
+    private func switchMode(type: ResultScreenType) {
+        switch type {
+        case .oneRM:
+            print(1)
+        case .test:
+            print(2)
+        }
+    }
+    
     private func setupViews() {
         title = "Рекорды"
         view.backgroundColor = R.color.backgroundColor()
-        segmentedControl.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(segmentedControl)
         view.addSubview(recordsTableView)

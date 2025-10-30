@@ -14,7 +14,7 @@ final class SegmentedControl: UISegmentedControl {
         self.titles = titles
         super.init(frame: .zero)
         setupTitles()
-        selectedSegmentIndex = 0
+        configureSegmentedControl()
     }
 
     required init?(coder: NSCoder) {
@@ -26,5 +26,10 @@ final class SegmentedControl: UISegmentedControl {
         for (index, title) in titles.enumerated() {
             insertSegment(withTitle: title, at: index, animated: false)
         }
+    }
+    
+    private func configureSegmentedControl() {
+        selectedSegmentIndex = 0
+        self.translatesAutoresizingMaskIntoConstraints = false
     }
 }
