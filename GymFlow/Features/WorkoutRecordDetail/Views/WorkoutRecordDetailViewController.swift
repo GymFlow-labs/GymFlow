@@ -109,6 +109,7 @@ extension WorkoutRecordDetailViewController: UITableViewDataSource, UITableViewD
 
 private extension WorkoutRecordDetailViewController {
     func setupLayout() {
+        title = exercise.nameRu
         view.backgroundColor = R.color.backgroundColor()
         view.addSubview(tableView)
         

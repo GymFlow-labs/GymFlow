@@ -51,6 +51,7 @@ final class ResultsListViewController: UIViewController {
     
     // MARK: - Private Methods
     private func setupViews() {
+        title = "Рекорды"
         view.backgroundColor = R.color.backgroundColor()
         view.addSubview(recordsTableView)
         
