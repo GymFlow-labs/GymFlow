@@ -128,8 +128,10 @@ extension CrossfitTestsViewController: UICollectionViewDataSource {
         
         let test = tests[indexPath.item]
         cell.configure(with: test)
-        cell.onFavoriteTap = { [weak self] in
-            self?.toggleFavorite(at: indexPath)
+        cell.onFavoriteTap = { [weak self, weak cell] in
+            guard let self, let cell else { return }
+            self.tests[indexPath.item].isFavorite.toggle()
+            cell.updateFavorite(self.tests[indexPath.item].isFavorite)
         }
         cell.onInfoTap = { [weak self] in
             self?.showInfo(for: test)
