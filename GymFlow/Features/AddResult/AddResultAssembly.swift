@@ -7,23 +7,27 @@
 
 import SwiftUI
 
-final class AddRecordAssembly {
+final class AddResultAssembly {
     private let servicesAssembly: ServicesAssembly
     
     init(servicesAssembly: ServicesAssembly) {
         self.servicesAssembly = servicesAssembly
     }
     
-    func build(onSelectExercise: ((Binding<Exercise?>) -> Void)? = nil) -> AddRecordView {
+    func build(
+        typeView: AddResultViewType,
+        selectedExercise: Exercise? = nil,
+        selectedTest: CrossfitTest? = nil
+    ) -> AddResultView {
         let workoutService = servicesAssembly.workoutRecordServiceImpl
         
-        let viewModel = AddRecordViewModel(
-            workoutRecordRepository: workoutService
-        )
+        let viewModel = AddResultViewModel(workoutRecordRepository: workoutService)
         
-        let view = AddRecordView(
+        let view = AddResultView(
             viewModel: viewModel,
-            onSelectExercise: onSelectExercise
+            type: typeView,
+            selectedExercise: selectedExercise,
+            selectedTest: selectedTest
         )
         return view
     }

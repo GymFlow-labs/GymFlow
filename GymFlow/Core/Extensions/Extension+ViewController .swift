@@ -24,8 +24,8 @@ extension UIViewController {
             rootView: ToastView(
                 message: message,
                 type: type,
-                onClose: { [weak self, weak host] in
-                    guard let self, let host else { return }
+                onClose: { [weak host] in
+                    guard let host else { return }
                     UIView.animate(
                         withDuration: 0.2,
                         animations: {
