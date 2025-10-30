@@ -1,5 +1,5 @@
 //
-//  RecordsListViewController.swift
+//  ResultsListViewController.swift
 //  GymFlow
 //
 //  Created by Artem Kriukov on 05.10.2025.
@@ -7,9 +7,9 @@
 
 import UIKit
 
-final class RecordsListViewController: UIViewController {
+final class ResultsListViewController: UIViewController {
     // MARK: - Properties
-    private let viewModel: RecordListViewModelProtocol
+    private let viewModel: ResultsListViewModelProtocol
     private let servicesAssembly: ServicesAssembly
     
     var onSelectRecord: ((Exercise) -> Void)?
@@ -21,7 +21,7 @@ final class RecordsListViewController: UIViewController {
         element.backgroundColor = R.color.backgroundColor()
         element.showsVerticalScrollIndicator = false
         element.separatorStyle = .none
-        element.register(RecordTableViewCell.self)
+        element.register(ResultsTableViewCell.self)
         element.translatesAutoresizingMaskIntoConstraints = false
         return element
     }()
@@ -39,7 +39,7 @@ final class RecordsListViewController: UIViewController {
     }
     
     // MARK: - Init
-    init(viewModel: RecordListViewModelProtocol, servicesAssembly: ServicesAssembly) {
+    init(viewModel: ResultsListViewModelProtocol, servicesAssembly: ServicesAssembly) {
         self.viewModel = viewModel
         self.servicesAssembly = servicesAssembly
         super.init(nibName: nil, bundle: nil)
@@ -73,13 +73,13 @@ final class RecordsListViewController: UIViewController {
 
 // MARK: - UITableViewDataSource
 
-extension RecordsListViewController: UITableViewDataSource {
+extension ResultsListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         viewModel.exercises.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell: RecordTableViewCell = tableView.dequeueReusableCell()
+        let cell: ResultsTableViewCell = tableView.dequeueReusableCell()
         let model = viewModel.exercises[indexPath.row]
         cell.configure(with: model)
         return cell
@@ -88,7 +88,7 @@ extension RecordsListViewController: UITableViewDataSource {
 
 // MARK: - UITableViewDelegate
 
-extension RecordsListViewController: UITableViewDelegate {
+extension ResultsListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         UITableView.automaticDimension
     }

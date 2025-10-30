@@ -1,5 +1,5 @@
 //
-//  RecordTableViewCell.swift
+//  ResultsTableViewCell.swift
 //  GymFlow
 //
 //  Created by Artem Kriukov on 13.10.2025.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class RecordTableViewCell: UITableViewCell, ReuseIdentifying {
+final class ResultsTableViewCell: UITableViewCell, ReuseIdentifying {
     
     // MARK: - UI
     

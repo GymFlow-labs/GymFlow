@@ -39,7 +39,7 @@ struct CoordinatorFactory {
     static func makeRecordListCoordinator(
         navigationController: UINavigationController,
         servicesAssembly: ServicesAssembly
-    ) -> RecordsListCoordinator {
-        RecordsListCoordinator(navigationController: navigationController, servicesAssembly: servicesAssembly)
+    ) -> ResultsListCoordinator {
+        ResultsListCoordinator(navigationController: navigationController, servicesAssembly: servicesAssembly)
     }
 }

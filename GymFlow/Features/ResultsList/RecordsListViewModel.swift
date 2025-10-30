@@ -7,12 +7,12 @@
 
 import Foundation
 
-protocol RecordListViewModelProtocol {
+protocol ResultsListViewModelProtocol {
     func fetchRecords(completion: @escaping () -> Void)
     var exercises: [Exercise] { get }
 }
 
-final class RecordsListViewModel: RecordListViewModelProtocol {
+final class RecordsListViewModel: ResultsListViewModelProtocol {
     private var exercise1RMRepositories: Exercise1RMProtocol
     private(set) var exercises: [Exercise] = []
     

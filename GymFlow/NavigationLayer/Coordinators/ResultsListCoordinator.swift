@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class RecordsListCoordinator: Coordinator {
+final class ResultsListCoordinator: Coordinator {
     var navigationController: UINavigationController
 
     var completionHandler: CoordinatorHandler?
@@ -21,7 +21,7 @@ final class RecordsListCoordinator: Coordinator {
     }
 
     func start() {
-        let recordsListAssembly = RecordsListAssembly(serviceAssembly: servicesAssembly)
+        let recordsListAssembly = ResultsListAssembly(serviceAssembly: servicesAssembly)
         let vc = recordsListAssembly.build()
         vc.onSelectRecord = { [weak self] exercise in
             self?.showRecordDetail(for: exercise)
