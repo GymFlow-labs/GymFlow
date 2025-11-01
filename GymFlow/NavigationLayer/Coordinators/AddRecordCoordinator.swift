@@ -39,7 +39,7 @@ final class AddRecordCoordinator: Coordinator {
     private func showAddRecord(
         type: AddResultViewType,
         selectedExercise: Exercise? = nil,
-        selectedTest: CrossfitTest? = nil
+        selectedTest: CrossfitTests? = nil
     ) {
         let addRecordAssembly = AddResultAssembly(servicesAssembly: servicesAssembly)
         var rootView = addRecordAssembly.build(

@@ -10,8 +10,7 @@ import Foundation
 
 protocol WorkoutRecordRepositoryProtocol {
     func addRecord(for exercise: Exercise, date: Date, weight: Double) async throws
-#warning("async throws")
-    func fetchRecords(forExerciseID id: String) -> [WorkoutRecord]
+    func fetchRecords(forExerciseID id: String) async throws -> [WorkoutRecord]
     func deleteRecord(_ record: WorkoutRecord) async throws
 }
 
@@ -44,7 +43,7 @@ final class WorkoutRecordsRepositories: WorkoutRecordRepositoryProtocol {
         }
     }
     
-    func fetchRecords(forExerciseID id: String) -> [WorkoutRecord] {
+    func fetchRecords(forExerciseID id: String) async throws -> [WorkoutRecord] {
         guard let exerciseEntity = try? context.fetch(Exercise1RM.fetchRequestForID(id)).first else {
             return []
         }

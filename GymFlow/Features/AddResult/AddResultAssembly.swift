@@ -17,7 +17,7 @@ final class AddResultAssembly {
     func build(
         typeView: AddResultViewType,
         selectedExercise: Exercise? = nil,
-        selectedTest: CrossfitTest? = nil
+        selectedTest: CrossfitTests? = nil
     ) -> AddResultView {
         let workoutService = servicesAssembly.workoutRecordServiceImpl
         

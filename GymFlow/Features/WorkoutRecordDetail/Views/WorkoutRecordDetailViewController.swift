@@ -38,15 +38,20 @@ final class WorkoutRecordDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupLayout()
-        loadRecords()
+        
+        Task {
+            await loadRecords()
+        }
     }
 
-    private func loadRecords() {
+    private func loadRecords() async {
         let exerciseID = exercise.id
-        viewModel.fetchWorkoutRecords(for: exerciseID) {
-            DispatchQueue.main.async { [weak self] in
-                self?.tableView.reloadData()
-            }
+        
+        do {
+            try await viewModel.fetchWorkoutRecords(for: exerciseID)
+            self.tableView.reloadData()
+        } catch {
+            showSwiftUIToast(message: "Не удалось загрузить список рекордов", type: .error)
         }
     }
     

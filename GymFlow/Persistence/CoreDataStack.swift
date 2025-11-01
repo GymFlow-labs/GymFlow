@@ -15,7 +15,7 @@ final class CoreDataStack {
     }()
     
     private lazy var persistentContainer: NSPersistentContainer = {
-        let container = NSPersistentContainer(name: "ExerciseDataModel")
+        let container = NSPersistentContainer(name: "GymFlowDataModel")
         container.loadPersistentStores { _, error in
             if let error {
                 assertionFailure("Ошибка при загрузке хранилища Core Data: \(error)")

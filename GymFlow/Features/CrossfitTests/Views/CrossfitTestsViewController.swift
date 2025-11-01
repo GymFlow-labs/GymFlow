@@ -18,8 +18,8 @@ struct CrossfitTest {
 final class CrossfitTestsViewController: UIViewController {
     
     // MARK: - Properties
-    private var tests: [CrossfitTest] = []
-    var onTestSelected: ((CrossfitTest) -> Void)?
+    private var tests: [CrossfitTests] = []
+    var onTestSelected: ((CrossfitTests) -> Void)?
     
     // MARK: - UI
     private lazy var searchController: UISearchController = {
@@ -55,32 +55,7 @@ final class CrossfitTestsViewController: UIViewController {
     
     // MARK: - Private Methods
     private func loadMockData() {
-        tests = [
-            CrossfitTest(
-                id: "1",
-                name: "TEST 1: Cindy",
-                description: "AMRAP 20 минут: 5 отжманий, 10\n15 подтуняний",
-                isFavorite: true
-            ),
-            CrossfitTest(
-                id: "2",
-                name: "TEST 2: Fran",
-                description: "AMRAP 20 отиманий, 10\n15 подтуняний",
-                isFavorite: true
-            ),
-            CrossfitTest(
-                id: "3",
-                name: "TEST 2: Murph",
-                description: "",
-                isFavorite: true
-            ),
-            CrossfitTest(
-                id: "4",
-                name: "TEST 2: Fran",
-                description: "21-15-9: Трастеры, Подтуянания21-15-9: Трастеры, 21-15-9: Трастеры, ПодтуянанияПодтуянания21-15-9: Трастеры, Подтуянания",
-                isFavorite: true
-            )
-        ]
+        tests = crossfitTestsDataSource
         collectionView.reloadData()
     }
     
@@ -89,8 +64,8 @@ final class CrossfitTestsViewController: UIViewController {
         collectionView.reloadItems(at: [indexPath])
     }
     
-    func showInfo(for test: CrossfitTest) {
-        print("ℹ️ Info tapped for: \(test.name)")
+    func showInfo(for test: CrossfitTests) {
+        print("ℹ️ Info tapped for: \(test.nameEn)")
     }
 
 }

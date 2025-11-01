@@ -8,10 +8,16 @@
 import Foundation
 
 @MainActor
-final class ExercisesViewModel: ObservableObject {
+protocol ExercisesViewModelProtocol: ObservableObject {
+    var exercises: [Exercise] { get }
+    func fetchExercises() async throws
+}
+
+@MainActor
+final class ExercisesViewModel: ExercisesViewModelProtocol {
     private let exercisesNetworkClient: ExercisesAPIProtocol
     
-    @Published private(set) var exercises: [Exercise] = []
+    @Published private(set) var exercises: [Exercise] = exercisesDataSource
     @Published var isLoading = false
     
     init(exercisesNetworkClient: ExercisesAPIProtocol) {

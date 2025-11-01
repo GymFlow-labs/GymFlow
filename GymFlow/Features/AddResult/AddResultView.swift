@@ -15,7 +15,7 @@ enum AddResultViewType {
 struct AddResultView: View {
     let type: AddResultViewType
     private var selectedExercise: Exercise?
-    private var selectedTest: CrossfitTest?
+    private var selectedTest: CrossfitTests?
     
     @State private var showCalendar = false
     @State private var weight = "0"
@@ -44,13 +44,13 @@ struct AddResultView: View {
         viewModel: AddResultViewModelProtocol,
         type: AddResultViewType,
         selectedExercise: Exercise? = nil,
-        selectedTest: CrossfitTest? = nil
+        selectedTest: CrossfitTests? = nil
     ) {
         self.viewModel = viewModel
         self.type = type
         self.selectedExercise = selectedExercise
         self.selectedTest = selectedTest
-        print("✅ AddResultView init called with test:", selectedTest?.name ?? "nil")
+        print("✅ AddResultView init called with test:", selectedTest?.nameEn ?? "nil")
     }
     
     var body: some View {
@@ -396,7 +396,7 @@ struct SaveButton: View {
 
 struct SelectedExerciseView: View {
     let selectedExercise: Exercise?
-    let selectedTest: CrossfitTest?
+    let selectedTest: CrossfitTests?
     let type: AddResultViewType
     let onTap: () -> Void
     
@@ -405,7 +405,7 @@ struct SelectedExerciseView: View {
         case .oneRepMax:
             return selectedExercise?.nameRu ?? "Выберите упражнение"
         case .test:
-            return selectedTest?.name ?? "Выберите тест"
+            return selectedTest?.nameEn ?? "Выберите тест"
         }
     }
     

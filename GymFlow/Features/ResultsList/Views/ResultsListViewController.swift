@@ -68,6 +68,7 @@ final class ResultsListViewController: UIViewController {
     }
     
     private func switchMode(type: ResultScreenType) {
+        navigationItem.title = type.title
         switch type {
         case .oneRM:
             print(1)
@@ -77,7 +78,6 @@ final class ResultsListViewController: UIViewController {
     }
     
     private func setupViews() {
-        title = "Рекорды"
         view.backgroundColor = R.color.backgroundColor()
         
         view.addSubview(segmentedControl)

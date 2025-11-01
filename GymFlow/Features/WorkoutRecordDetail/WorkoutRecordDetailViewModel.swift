@@ -9,8 +9,7 @@ import Foundation
 
 protocol WorkoutRecordDetailViewModelProtocol {
     var workoutRecord: [WorkoutRecord] { get }
-#warning("async throws")
-    func fetchWorkoutRecords(for exerciseId: String, completion: @escaping () -> Void)
+    func fetchWorkoutRecords(for exerciseId: String) async throws
     func deleteRecord(at index: Int) async throws
 }
 
@@ -23,10 +22,9 @@ final class WorkoutRecordDetailViewModel: WorkoutRecordDetailViewModelProtocol {
         self.workoutRecordsRepositories = workoutRecordsRepositories
     }
     
-    func fetchWorkoutRecords(for exerciseId: String, completion: @escaping () -> Void) {
-        let records = workoutRecordsRepositories.fetchRecords(forExerciseID: exerciseId)
+    func fetchWorkoutRecords(for exerciseId: String) async throws {
+        let records = try await workoutRecordsRepositories.fetchRecords(forExerciseID: exerciseId)
         self.workoutRecord = records
-        completion()
     }
     
     func deleteRecord(at index: Int) async throws {

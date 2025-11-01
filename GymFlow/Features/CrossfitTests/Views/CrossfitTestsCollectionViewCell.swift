@@ -139,8 +139,8 @@ final class CrossfitTestCell: UICollectionViewCell, ReuseIdentifying {
     }
     
     // MARK: - Public Methods
-    func configure(with test: CrossfitTest) {
-        titleLabel.text = test.name
+    func configure(with test: CrossfitTests) {
+        titleLabel.text = test.nameEn
         descriptionLabel.text = test.description
         descriptionLabel.isHidden = test.description.isEmpty
         
